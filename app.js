@@ -8,15 +8,15 @@
  */
 
 // =========================================================================
-// GOOGLE GEMINI 3.6 FLASH LIVE NEURAL ENGINE INTEGRATION
+// GOOGLE GEMINI 2.0 FLASH LIVE NEURAL ENGINE INTEGRATION
 // =========================================================================
 const GEMINI_CONFIG = {
   get apiKey() {
     return (typeof localStorage !== 'undefined' && localStorage.getItem('gemini_api_key')) || 
            (typeof atob === 'function' ? atob("QVEuQWI4Uk42TENza08tVmxFQU1MYU1xWGpoMHNtRkxHbU9QeDJFQ1VGS2lzUWJXMy1kSWc=") : "");
   },
-  model: "gemini-3.6-flash",
-  endpoint: "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent"
+  model: "gemini-2.0-flash",
+  endpoint: "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"
 };
 
 function formatGeminiMarkdown(text) {
@@ -3289,7 +3289,7 @@ class CivicOperatingSystem {
   }
 
   // =========================================================================
-  // GOOGLE GEMINI 3.6 FLASH LIVE DISPATCH & CONVERSATIONAL COPILOT
+  // GOOGLE GEMINI 2.0 FLASH LIVE DISPATCH & CONVERSATIONAL COPILOT
   // =========================================================================
   async callGemini(prompt, systemInstruction = "") {
     try {
@@ -3338,14 +3338,14 @@ class CivicOperatingSystem {
     area.innerHTML = `
       <div class="samarth-response-card gemini-thinking-card">
         <div class="src-header">
-          <span class="src-badge gemini-pulse"><span class="gemini-sparkle">✨</span> GEMINI 3.6 FLASH LIVE</span>
+          <span class="src-badge gemini-pulse"><span class="gemini-sparkle">✨</span> GEMINI 2.0 FLASH LIVE</span>
           <span class="src-time">Streaming Neural Inference...</span>
         </div>
         <h4 class="src-title">Analyzing: "${query}"</h4>
         <div class="gemini-thinking-body">
           <div class="gemini-shimmer-line"></div>
           <div class="gemini-shimmer-line short"></div>
-          <p class="gemini-thinking-text">🧠 Samarth AI is synthesizing real-time civic telemetries, municipal statutes, and GIS engineering models with Google Gemini 3.6 Flash...</p>
+          <p class="gemini-thinking-text">🧠 Samarth AI is synthesizing real-time civic telemetries, municipal statutes, and GIS engineering models with Google GEMINI 2.0 FLASH...</p>
         </div>
       </div>
     `;
@@ -3368,7 +3368,7 @@ Respond authoritatively, concisely, professionally, and accurately. Use bullet p
       area.innerHTML = `
         <div class="samarth-response-card">
           <div class="src-header">
-            <span class="src-badge gemini-pulse"><span class="gemini-sparkle">✨</span> GEMINI 3.6 FLASH VERIFIED INSIGHT</span>
+            <span class="src-badge gemini-pulse"><span class="gemini-sparkle">✨</span> GEMINI 2.0 FLASH VERIFIED INSIGHT</span>
             <span class="src-time">Latency ~850ms • Live API</span>
           </div>
           <h4 class="src-title">${query}</h4>
@@ -3378,7 +3378,7 @@ Respond authoritatively, concisely, professionally, and accurately. Use bullet p
           <div class="src-actions-row">
             <button class="btn-samarth-action" onclick="civicApp.executeSamarthAction('cluster23')">⚡ Focus Cluster #23</button>
             <button class="btn-samarth-action secondary" onclick="civicApp.executeSamarthAction('plastic')">♻️ Open Plastic Bitumen Tool</button>
-            <button class="btn-copy-insight" onclick="navigator.clipboard.writeText(${JSON.stringify(rawResponse)}); alert('Copied Gemini 3.6 Flash insight to clipboard!')">📋 Copy Insight</button>
+            <button class="btn-copy-insight" onclick="navigator.clipboard.writeText(${JSON.stringify(rawResponse)}); alert('Copied GEMINI 2.0 FLASH insight to clipboard!')">📋 Copy Insight</button>
           </div>
         </div>
       `;

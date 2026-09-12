@@ -13,7 +13,7 @@
 const GEMINI_CONFIG = {
   get apiKey() {
     return (typeof localStorage !== 'undefined' && localStorage.getItem('gemini_api_key')) || 
-           (typeof atob === 'function' ? atob("QVEuQWI4Uk42TENza08tVmxFQU1MYU1xWGpoMHNtRkxHbU9QeDJFQ1VGS2lzUWJXMy1kSWc=") : "");
+           (typeof atob === 'function' ? atob("QVEuQWI4Uk42S1RLWkhvbFVVVEtSaUhmMmNSRi1OVE16VU52bVV0TERRSW9NS3o1cnc2Q2c=") : "");
   },
   model: "gemini-2.0-flash",
   endpoint: "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"

@@ -1,0 +1,1954 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CitySynapse — Smart City Citizen Reporting Platform & Unified Command Center</title>
+  <meta name="description" content="CitySynapse: Production-grade Civic Operating System connecting Citizens, Field Workers, and City Command Centers with transparent AI triage, incident clustering, and SLA monitoring." />
+  
+  <!-- Typography: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  
+  <!-- Local Leaflet CSS (Zero tracking / No 3rd-party blockage) -->
+  <link rel="stylesheet" href="leaflet.css" />
+  
+  <!-- Main Production Stylesheet -->
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Client-Side EXIF & GPS Metadata Parser -->
+  <script src="exif_parser.js"></script>
+
+  <!-- Google Maps JavaScript API (Entire India Geographic Coverage) -->
+  <script src="https://maps.googleapis.com/maps/api/js?loading=async&libraries=places,geometry&callback=initGoogleCivicMap" async defer></script>
+</head>
+<body class="civic-os-body">
+
+  <!-- =================================================================
+       GLOBAL APPLICATION BAR (Clean, Unified Navigation & Role Switcher)
+  ================================================================== -->
+  <header class="global-app-bar" id="global-app-bar">
+    <!-- Left: City Brand & Metro Selector -->
+    <div class="bar-left">
+      <div class="civic-brand">
+        <div class="brand-emblem">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+          </svg>
+        </div>
+        <div class="brand-titles">
+          <div class="brand-title-row">
+            <span class="brand-app-name">CitySynapse</span>
+            <span class="brand-live-badge"><span class="live-pulse-dot mini"></span> ONLINE</span>
+          </div>
+          <div class="metro-dropdown-wrap">
+            <select class="metro-select" id="metro-select" onchange="civicApp.changeMetro(this.value)" title="Select City Municipality">
+              <option value="IND" selected>🇮🇳 Entire India • Pan-India Civic Grid</option>
+              <option value="BLR">Bengaluru • BBMP Smart City</option>
+              <option value="DEL">Delhi • MCD Urban Command</option>
+              <option value="MUM">Mumbai • BMC Greater Metro</option>
+              <option value="HYD">Hyderabad • GHMC Integrated Grid</option>
+              <option value="CHN">Chennai • GCC Metropolitan Grid</option>
+              <option value="KOL">Kolkata • KMC Central Municipality</option>
+              <option value="AMD">Ahmedabad • AMC Smart Urban</option>
+              <option value="PUN">Pune • PMC Civic Resilience</option>
+              <option value="JAI">Jaipur • JMC Heritage Smart Grid</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Center: Role / Experience Switcher (3 Specialized Experiences) -->
+    <div class="bar-center">
+      <div class="role-switcher-group" role="tablist" aria-label="Experience Switcher">
+        <button class="role-btn active" id="role-btn-command" onclick="civicApp.switchExperience('command')" title="Desktop Mission Control (Press 1)">
+          <span class="role-icon">🖥️</span>
+          <span class="role-label">Command Center</span>
+          <kbd class="kbd-sub">1</kbd>
+        </button>
+
+        <button class="role-btn" id="role-btn-citizen" onclick="civicApp.switchExperience('citizen')" title="Simple Citizen Reporting App (Press 2)">
+          <span class="role-icon">📱</span>
+          <span class="role-label">Citizen App</span>
+          <span class="role-badge pulse">Easy Report</span>
+          <kbd class="kbd-sub">2</kbd>
+        </button>
+
+        <button class="role-btn" id="role-btn-field" onclick="civicApp.switchExperience('field')" title="Field Operations Worker View (Press 3)">
+          <span class="role-icon">👷</span>
+          <span class="role-label">Field Worker Ops</span>
+          <kbd class="kbd-sub">3</kbd>
+        </button>
+      </div>
+    </div>
+
+    <!-- Right: Global Actions, SLA Watch & Hackathon Guided Demo Trigger -->
+    <div class="bar-right">
+      <!-- SLA Status Indicator -->
+      <div class="sla-live-pill" id="global-sla-indicator" title="City-Wide SLA Compliance">
+        <span class="sla-dot green"></span>
+        <span class="sla-text">SLA: <strong>94.2% Safe</strong></span>
+      </div>
+
+      <!-- Emergency Mode Button -->
+      <button class="btn-emergency-mode" id="btn-emergency-mode" onclick="civicApp.promptEmergencyMode()" title="Toggle Confirmation-Gated Crisis Operations Mode">
+        <span class="em-icon">⚠️</span>
+        <span class="em-label">Crisis</span>
+      </button>
+
+      <!-- Guided Hackathon Demo Button -->
+      <button class="btn-guided-demo" id="btn-guided-demo" onclick="civicApp.launchGuidedDemo()" title="Run continuous 60-second end-to-end hackathon demonstration">
+        <span class="demo-play-icon">▶</span>
+        <span class="demo-label">Run 60s Demo</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- =================================================================
+       EXPERIENCE 1: UNIFIED COMMAND CENTER (DESKTOP-FIRST, DARK)
+  ================================================================== -->
+  <main class="experience-container active" id="exp-command-center">
+
+    <!-- Command Center Sub-Navigation Header -->
+    <section class="command-subnav">
+      <div class="subnav-tabs">
+        <button class="cmd-tab active" data-cmd-tab="overview" onclick="civicApp.switchCommandTab('overview')">
+          <span>🗺️ City Map</span>
+        </button>
+        <button class="cmd-tab" data-cmd-tab="clusters" onclick="civicApp.switchCommandTab('clusters')" title="PathChakshu AI Civic Complaints">
+          <span>📍 PathChakshu</span>
+          <span class="badge-count text-teal" id="badge-clusters-count">3</span>
+        </button>
+        <button class="cmd-tab" data-cmd-tab="departments" onclick="civicApp.switchCommandTab('departments')">
+          <span>🏢 Departments</span>
+        </button>
+        <button class="cmd-tab" data-cmd-tab="sla" onclick="civicApp.switchCommandTab('sla')">
+          <span>⏱️ SLA Monitor</span>
+          <span class="badge-count text-amber" id="badge-sla-count">1</span>
+        </button>
+        <button class="cmd-tab" data-cmd-tab="analytics" onclick="civicApp.switchCommandTab('analytics')">
+          <span>📊 Analytics</span>
+        </button>
+        <button class="cmd-tab" data-cmd-tab="mediroute" onclick="civicApp.switchCommandTab('mediroute')" title="MediRoute Ambulance Corridor">
+          <span class="indicator-dot green"></span>
+          <span>🚑 MediRoute</span>
+        </button>
+        <button class="cmd-tab" data-cmd-tab="resqgrid" onclick="civicApp.focusSystem('resqgrid')" title="ResQgrid Disaster SEWA SOS">
+          <span class="indicator-dot red"></span>
+          <span>🛡️ ResQgrid</span>
+        </button>
+      </div>
+
+      <!-- Quick Natural Language Filter Bar -->
+      <div class="nl-search-container">
+        <div class="nl-input-wrapper">
+          <span class="nl-icon">🔍</span>
+          <input type="text" id="nl-query-input" class="nl-input" placeholder="Search or filter: e.g. 'near schools', 'potholes', 'Cluster #23'..." onkeyup="civicApp.handleNlInput(event)" />
+          <button class="btn-nl-clear" id="btn-nl-clear" onclick="civicApp.clearNlFilter()" style="display:none;">✕</button>
+        </div>
+        <div class="nl-preset-chips">
+          <span class="preset-label">Quick:</span>
+          <button class="chip-preset text-teal" onclick="civicApp.applyNlPreset('plastic road')">♻️ Plastic Road Solution</button>
+          <button class="chip-preset" onclick="civicApp.applyNlPreset('near schools')">Near Schools</button>
+          <button class="chip-preset" onclick="civicApp.applyNlPreset('Cluster #23')">Cluster #23</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================
+         FRIENDLY SMART CITY SYSTEM HUB (3 Core Integrated Platforms)
+    ================================================================== -->
+    <section class="system-hub-hero" id="system-hub-hero">
+      <div class="hero-welcome-bar">
+        <div class="hwb-left">
+          <div class="hwb-icon-badge">🏛️</div>
+          <div class="hwb-text">
+            <div class="hwb-kicker">
+              <span class="hub-pill"><span class="live-pulse-dot mini"></span> ALL SYSTEMS ONLINE</span>
+              <span class="hwb-city-label">BBMP BENGALURU SMART CITY</span>
+            </div>
+            <h1 class="hwb-title">Smart City Citizen & Operations Platform</h1>
+            <p class="hwb-sub">Choose a system below to focus the operations grid, or explore the live city map.</p>
+          </div>
+        </div>
+        <div class="hwb-right">
+          <!-- Samarth AI Glowful Button (on the left side of Citizen Reporting Portal, in same style) -->
+          <button class="btn-hero-samarth" id="btn-hero-samarth" onclick="civicApp.openSamarthConsole()" title="Launch Samarth AI Civic Intelligence Console (Press S or ⌘K)">
+            <span class="btn-ai-icon">🤖</span>
+            <div class="btn-text-group">
+              <span class="btn-top-lbl">Samarth AI Copilot</span>
+              <span class="btn-bot-lbl">Ask anything or audit SLA (Press S) →</span>
+            </div>
+          </button>
+
+          <!-- Citizen Reporting Portal Button (on the right) -->
+          <button class="btn-switch-to-citizen" onclick="civicApp.switchExperience('citizen')" title="Switch to Simple Citizen Reporting View (Press 2)">
+            <span class="btn-phone-icon">📱</span>
+            <div class="btn-text-group">
+              <span class="btn-top-lbl">Citizen Reporting Portal</span>
+              <span class="btn-bot-lbl">Report an issue in 20 seconds →</span>
+            </div>
+          </button>
+        </div>
+      </div>
+
+      <!-- 3 Prominent System Focus Cards (Strictly in One Line) -->
+      <div class="system-cards-trio">
+        <!-- 1. PathChakshu: Civic Complaints -->
+        <div class="system-card active" id="sys-card-pathchakshu" onclick="civicApp.focusSystem('pathchakshu')">
+          <div class="sys-card-top">
+            <div class="sys-card-lead">
+              <div class="sys-icon-badge indigo">📍</div>
+              <h3 class="sys-title">PathChakshu</h3>
+              <span class="ai-brain-chip">🤖 SAMARTH AI CORE</span>
+            </div>
+            <span class="sys-status-tag indigo">43 Clustered</span>
+          </div>
+          <p class="sys-desc">Powered by Samarth AI. Triage grievances, detect duplicates & deploy permanent 2.36mm waste-plastic bitumen technology.</p>
+          <div class="sys-meta">
+            <span class="sys-tags">♻️ Plastic Road Fix • Roads • Lights</span>
+            <span class="sys-cta">Focus Complaints ↓</span>
+          </div>
+        </div>
+
+        <!-- 2. MediRoute: Ambulance Corridor -->
+        <div class="system-card" id="sys-card-mediroute" onclick="civicApp.focusSystem('mediroute')">
+          <div class="sys-card-top">
+            <div class="sys-card-lead">
+              <div class="sys-icon-badge emerald">🚑</div>
+              <h3 class="sys-title">MediRoute</h3>
+            </div>
+            <span class="sys-status-tag emerald">1.0 km Green Wave</span>
+          </div>
+          <p class="sys-desc">Emergency corridor. Live 1km dynamic GPS radius preempts traffic signals for active ambulances.</p>
+          <div class="sys-meta">
+            <span class="sys-tags">AMB-09 Active</span>
+            <span class="sys-cta">Track Corridor ↓</span>
+          </div>
+        </div>
+
+        <!-- 3. ResQgrid: Disaster & SOS SEWA -->
+        <div class="system-card" id="sys-card-resqgrid" onclick="civicApp.focusSystem('resqgrid')">
+          <div class="sys-card-top">
+            <div class="sys-card-lead">
+              <div class="sys-icon-badge rose">🛡️</div>
+              <h3 class="sys-title">ResQgrid</h3>
+            </div>
+            <span class="sys-status-tag rose">Standby Ready</span>
+          </div>
+          <p class="sys-desc">Disaster & civic SEWA escalation. High-risk ward monitoring, flood alerts & rapid emergency dispatch.</p>
+          <div class="sys-meta">
+            <span class="sys-tags">Wards 12 & 14 Monitored</span>
+            <span class="sys-cta">Crisis Console ↓</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB: CITY OVERVIEW & MAP -->
+    <div class="cmd-panel active" id="cmd-tab-overview">
+      <!-- Streamlined Operational Metrics Bar (Compact & Scannable) -->
+      <div class="cmd-kpi-strip">
+        <div class="kpi-pill indigo" onclick="civicApp.switchCommandTab('clusters')" title="Click to view AI clusters">
+          <span class="kpi-pill-icon">📍</span>
+          <div class="kpi-pill-text">
+            <span class="kpi-pill-lbl">AI CLUSTERS</span>
+            <strong class="kpi-pill-val" id="kpi-clusters-val">3 Clusters <span class="kpi-pill-sub">(142 Reports)</span></strong>
+          </div>
+          <span class="kpi-pill-arrow">→</span>
+        </div>
+
+        <div class="kpi-pill amber" onclick="civicApp.switchCommandTab('sla')" title="Click to view SLA countdowns">
+          <span class="kpi-pill-icon">⏱️</span>
+          <div class="kpi-pill-text">
+            <span class="kpi-pill-lbl">SLA RISK</span>
+            <strong class="kpi-pill-val text-amber" id="kpi-sla-risk-val">1 At Risk (42m)</strong>
+          </div>
+          <span class="kpi-pill-arrow">→</span>
+        </div>
+
+        <div class="kpi-pill sky" onclick="civicApp.switchCommandTab('departments')" title="Click to view active field crews">
+          <span class="kpi-pill-icon">👷</span>
+          <div class="kpi-pill-text">
+            <span class="kpi-pill-lbl">FIELD CREWS</span>
+            <strong class="kpi-pill-val text-sky" id="kpi-field-units-val">8 Teams Deployed</strong>
+          </div>
+          <span class="kpi-pill-arrow">→</span>
+        </div>
+
+        <div class="kpi-pill emerald" onclick="civicApp.switchCommandTab('mediroute')" title="Click to view MediRoute Corridor">
+          <span class="kpi-pill-icon">🚑</span>
+          <div class="kpi-pill-text">
+            <span class="kpi-pill-lbl">MEDIROUTE</span>
+            <strong class="kpi-pill-val text-green" id="kpi-mediroute-val">AMB-09 Active (1km)</strong>
+          </div>
+          <span class="kpi-pill-arrow">→</span>
+        </div>
+      </div>
+
+      <!-- Main Geospatial Command Grid: Map (Left) + Actionable Priority Feed (Right) -->
+      <div class="cmd-main-grid">
+        <!-- Map Panel -->
+        <div class="cmd-map-wrapper panel-dark">
+          <div class="panel-inner-header">
+            <div class="map-title-row">
+              <span class="indicator-dot green pulse"></span>
+              <h4>Live City Operations Map</h4>
+              <span class="map-city-tag" id="map-city-tag">BENGALURU CENTRAL</span>
+            </div>
+            <!-- Map Layer Toggles -->
+            <div class="map-layer-controls">
+              <label class="layer-chk">
+                <input type="checkbox" id="chk-layer-clusters" checked onchange="civicApp.toggleMapLayer('clusters')" />
+                <span class="chk-dot teal"></span> Incident Clusters
+              </label>
+              <label class="layer-chk">
+                <input type="checkbox" id="chk-layer-field" checked onchange="civicApp.toggleMapLayer('field')" />
+                <span class="chk-dot sky"></span> Field Teams
+              </label>
+              <label class="layer-chk">
+                <input type="checkbox" id="chk-layer-corridor" checked onchange="civicApp.toggleMapLayer('corridor')" />
+                <span class="chk-dot green"></span> MediRoute (1km)
+              </label>
+              <button class="btn-icon-xs" onclick="civicApp.recenterCommandMap()" title="Recenter Map">⌖ Recenter</button>
+            </div>
+          </div>
+          <div class="map-canvas-holder">
+            <div id="command-center-map" class="command-leaflet-map"></div>
+            <!-- Map Floating Alert Pill -->
+            <div class="map-incident-quickbadge" id="map-quickbadge">
+              <span class="quickbadge-dot"></span>
+              <span class="quickbadge-txt" id="map-quickbadge-text">Showing 3 Clusters across 5 Wards</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Side: Actionable Priority Queue -->
+        <div class="cmd-priority-feed panel-dark">
+          <div class="panel-inner-header">
+            <div>
+              <h4>Actionable Incidents Queue</h4>
+              <p class="panel-desc">Ranked by Transparent AI Priority Engine</p>
+            </div>
+            <span class="tag-status-pill text-teal" id="queue-filter-tag">All Active</span>
+          </div>
+
+          <!-- Quick Category Filters for Scannability -->
+          <div class="queue-filter-chips">
+            <button class="q-chip active" id="q-chip-all" onclick="civicApp.filterQueue('all')">All (7)</button>
+            <button class="q-chip" id="q-chip-pothole" onclick="civicApp.filterQueue('Pothole')">🚧 Potholes</button>
+            <button class="q-chip" id="q-chip-garbage" onclick="civicApp.filterQueue('Garbage')">🗑️ Garbage</button>
+            <button class="q-chip" id="q-chip-streetlight" onclick="civicApp.filterQueue('Streetlight')">💡 Lights</button>
+            <button class="q-chip" id="q-chip-drainage" onclick="civicApp.filterQueue('Drainage')">🌊 Drain</button>
+            <button class="q-chip" id="q-chip-water-leakage" onclick="civicApp.filterQueue('Water Leakage')">💧 Water</button>
+            <button class="q-chip" id="q-chip-power-line" onclick="civicApp.filterQueue('Power Line')">⚡ Power</button>
+            <button class="q-chip" id="q-chip-traffic" onclick="civicApp.filterQueue('Traffic')">🚗 Traffic</button>
+          </div>
+
+          <div class="incidents-scroll-list" id="command-incidents-list">
+            <!-- Pothole Incident with Realistic Photo Evidence -->
+            <div class="incident-action-card" onclick="civicApp.openIncidentDrawer('Cluster #23')" title="Click to inspect incident and assign field team">
+              <div class="iac-thumb-col">
+                <div class="iac-thumb-frame" onclick="event.stopPropagation(); civicApp.openIncidentPhotoModal('Cluster #23')" title="Click to view full HD realistic photo evidence">
+                  <img src="/assets/pothole.jpg" class="iac-thumb" alt="Deep Pothole Cluster on 100 Feet Road" loading="lazy" />
+                  <span class="iac-photo-tag"><span class="iac-photo-dot"></span>REAL PHOTO</span>
+                  <span class="iac-photo-zoom-btn">🔍 View HD</span>
+                </div>
+                <span class="iac-thumb-badge">🚧 Pothole</span>
+                <button class="btn-compare-photo" onclick="event.stopPropagation(); civicApp.openIncidentPhotoModal('Cluster #23', 'solution')" title="View 2.36mm Plastic Road Reconstruction Solution Photo">
+                  ♻️ Solution
+                </button>
+              </div>
+              <div class="iac-content">
+                <div class="iac-header">
+                  <div class="iac-title-wrap">
+                    <span class="iac-title">Deep Pothole Cluster on 100 Feet Road</span>
+                    <span class="iac-ward-tag">📍 100 Feet Road, Near Indiranagar Metro (Ward 12)</span>
+                  </div>
+                  <span class="priority-pill high">HIGH</span>
+                </div>
+                <p class="iac-friendly-desc">Deep pothole crater (14cm) caused by recurrent water stagnation.</p>
+                <div class="iac-plastic-pill" onclick="event.stopPropagation(); civicApp.openIncidentDrawer('Cluster #23')">
+                  <span class="ipp-icon">♻️</span>
+                  <span class="ipp-txt">Reconstruction: <strong>2.36mm Plastic Bitumen</strong> (IRC SP:98)</span>
+                </div>
+                <div class="iac-bottom-row">
+                  <div class="iac-meta-badges">
+                    <span class="iac-pill-tag count">👥 <strong>43</strong> Reports</span>
+                    <span class="iac-pill-tag text-amber">⏱️ <strong>42m</strong> SLA Left</span>
+                  </div>
+                  <div class="iac-actions-group">
+                    <button class="btn-card-wo" onclick="event.stopPropagation(); civicApp.openWorkOrderModal('Cluster #23')">📄 Work Order</button>
+                    <button class="btn-card-inspect" onclick="event.stopPropagation(); civicApp.openIncidentDrawer('Cluster #23')">Inspect Details →</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Garbage Incident with Realistic Photo Evidence -->
+            <div class="incident-action-card" onclick="civicApp.openIncidentDrawer('Cluster #18')" title="Click to inspect incident and assign field team">
+              <div class="iac-thumb-col">
+                <div class="iac-thumb-frame" onclick="event.stopPropagation(); civicApp.openIncidentPhotoModal('Cluster #18')" title="Click to view full HD realistic photo evidence">
+                  <img src="/assets/garbage.jpg" class="iac-thumb" alt="Severe Organic Garbage Overflow near School Gate" loading="lazy" />
+                  <span class="iac-photo-tag"><span class="iac-photo-dot"></span>REAL PHOTO</span>
+                  <span class="iac-photo-zoom-btn">🔍 View HD</span>
+                </div>
+                <span class="iac-thumb-badge">🗑️ Garbage</span>
+              </div>
+              <div class="iac-content">
+                <div class="iac-header">
+                  <div class="iac-title-wrap">
+                    <span class="iac-title">Severe Organic Garbage Overflow near School Gate</span>
+                    <span class="iac-ward-tag">📍 Sector 4 Main Market, Near Public School (Ward 14)</span>
+                  </div>
+                  <span class="priority-pill high">HIGH</span>
+                </div>
+                <p class="iac-friendly-desc">Estimated 4.8 tons decomposing organic biomass.</p>
+                <div class="iac-bottom-row">
+                  <div class="iac-meta-badges">
+                    <span class="iac-pill-tag count">👥 <strong>68</strong> Reports</span>
+                    <span class="iac-pill-tag text-green">⏱️ <strong>110m</strong> SLA Left</span>
+                  </div>
+                  <div class="iac-actions-group">
+                    <button class="btn-card-inspect" onclick="event.stopPropagation(); civicApp.openIncidentDrawer('Cluster #18')">Inspect Details →</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Streetlight Incident with Realistic Photo Evidence -->
+            <div class="incident-action-card" onclick="civicApp.openIncidentDrawer('Cluster #09')" title="Click to inspect incident and assign field team">
+              <div class="iac-thumb-col">
+                <div class="iac-thumb-frame" onclick="event.stopPropagation(); civicApp.openIncidentPhotoModal('Cluster #09')" title="Click to view full HD realistic photo evidence">
+                  <img src="/assets/streetlight.jpg" class="iac-thumb" alt="6 Defective Luminaires in Pedestrian Subway" loading="lazy" />
+                  <span class="iac-photo-tag"><span class="iac-photo-dot"></span>REAL PHOTO</span>
+                  <span class="iac-photo-zoom-btn">🔍 View HD</span>
+                </div>
+                <span class="iac-thumb-badge">💡 Streetlight</span>
+              </div>
+              <div class="iac-content">
+                <div class="iac-header">
+                  <div class="iac-title-wrap">
+                    <span class="iac-title">6 Defective Luminaires in Pedestrian Subway</span>
+                    <span class="iac-ward-tag">📍 Underpass Link Road, Near Bus Terminal (Ward 8)</span>
+                  </div>
+                  <span class="priority-pill high">HIGH</span>
+                </div>
+                <p class="iac-friendly-desc">Phase trip in distribution pillar.</p>
+                <div class="iac-bottom-row">
+                  <div class="iac-meta-badges">
+                    <span class="iac-pill-tag count">👥 <strong>31</strong> Reports</span>
+                    <span class="iac-pill-tag text-green">⏱️ <strong>165m</strong> SLA Left</span>
+                  </div>
+                  <div class="iac-actions-group">
+                    <button class="btn-card-inspect" onclick="event.stopPropagation(); civicApp.openIncidentDrawer('Cluster #09')">Inspect Details →</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- =================================================================
+           SUSTAINABLE POTHOLE SOLUTION: PLASTIC ROAD INNOVATION SHOWCASE
+      ================================================================== -->
+      <section class="plastic-road-showcase-card panel-dark" id="plastic-road-showcase">
+        <div class="pr-showcase-header">
+          <div class="pr-badge-pill">
+            <span class="pr-pill-dot"></span>
+            <span>IRC SP:98 MUNICIPAL ROAD INNOVATION</span>
+          </div>
+          <div class="pr-title-group">
+            <div class="pr-title-icon">♻️</div>
+            <div>
+              <h3 class="pr-title">Permanent Pothole Reconstruction: 2.36mm Waste Plastic Bitumen</h3>
+              <p class="pr-subtitle">
+                Transforming municipal single-use plastic waste (LDPE/HDPE/PU) — <strong>including plastic waste collected directly from citizen-raised garbage tickets</strong> — into a 100% hydrophobic, water-impermeable road surface that permanently stops monsoon pothole reformation.
+              </p>
+            </div>
+          </div>
+          <div class="pr-header-actions">
+            <button class="btn-pr-action" onclick="civicApp.openWorkOrderModal('Cluster #23')" title="View official municipal work order">
+              📄 Work Order (BBMP/ROADS/WO-23)
+            </button>
+            <button class="btn-pr-action primary" onclick="civicApp.openIncidentDrawer('Cluster #23')" title="Open 2.36mm engineering mix calculator">
+              🔬 Open Mix Calculator & Inspect
+            </button>
+          </div>
+        </div>
+
+        <!-- Circular Ticket-to-Tarmac Pipeline Callout -->
+        <div class="pr-circular-pipeline-badge">
+          <div class="pcpb-icon">🔄</div>
+          <div class="pcpb-text">
+            <strong>Circular Ticket-to-Tarmac Pipeline:</strong> Plastic waste reported in municipal garbage dump tickets is cleared by sanitation crews, shredded to ~2.36mm grain size, and directly utilized in road reconstruction — closing the loop between citizen complaint and resilient infrastructure.
+          </div>
+        </div>
+
+        <!-- 4 Core Engineering & Civic Pillars Grid -->
+        <div class="pr-pillars-grid">
+          <div class="pr-pillar-item">
+            <div class="pr-pillar-icon">🔬</div>
+            <div class="pr-pillar-content">
+              <h4>2.36mm Polymer Shred Spec</h4>
+              <p>Post-consumer LDPE carry-bags, milk pouches, & HDPE containers shredded to strict <strong>~2.36 mm grain size</strong> for homogeneous hot-mix dispersion at 160°C.</p>
+              <span class="pr-spec-tag">Polymer Ratio: 8% of Bitumen</span>
+            </div>
+          </div>
+
+          <div class="pr-pillar-item">
+            <div class="pr-pillar-icon">🛡️</div>
+            <div class="pr-pillar-content">
+              <h4>100% Hydrophobic Water Barrier</h4>
+              <p>Water penetration is the #1 cause of Indian monsoon potholes. Molten polymer coats aggregate, eliminating water stripping and preventing cavity recurrence.</p>
+              <span class="pr-spec-tag">Marshall Stability: +250%</span>
+            </div>
+          </div>
+
+          <div class="pr-pillar-item">
+            <div class="pr-pillar-icon">🌱</div>
+            <div class="pr-pillar-content">
+              <h4>Zero-Landfill Circular Economy</h4>
+              <p>Every average pothole repaired diverts <strong>~1,215 plastic bottles</strong> and carry-bags sourced directly from <strong>citizen-raised garbage dump tickets</strong>, preventing <strong>36.5 kg of CO₂ emissions</strong>.</p>
+              <span class="pr-spec-tag">Direct Ticket-to-Tarmac Sourcing</span>
+            </div>
+          </div>
+
+          <div class="pr-pillar-item">
+            <div class="pr-pillar-icon">⏱️</div>
+            <div class="pr-pillar-content">
+              <h4>3x Road Durability & Cost Saving</h4>
+              <p>Triples road resurfacing lifecycle from 3 to 10+ years. Eliminates repeated emergency patching and reduces annual municipal road maintenance budget by 38%.</p>
+              <span class="pr-spec-tag">Lifespan: 10+ Years</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Live Deployment Status Banner -->
+        <div class="pr-deployment-strip">
+          <div class="pr-dep-left">
+            <span class="pr-status-pulse"></span>
+            <span><strong>Live Deployment in Indiranagar (Ward 12):</strong> Road Reconstruction Crew Team Alpha deployed with 24 kg shredded polymer + 65 kg heated VG-30 coal tar binder.</span>
+          </div>
+          <div class="pr-dep-right">
+            <button class="btn-track-plastic-job" onclick="civicApp.switchExperience('field')">
+              👷 Track Field Truck & Crew →
+            </button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- TAB: AI INCIDENT CLUSTERS -->
+    <div class="cmd-panel" id="cmd-tab-clusters">
+      <div class="panel-dark section-container">
+        <div class="panel-inner-header">
+          <div>
+            <h3>AI Duplicate Detection & Incident Clustering</h3>
+            <p class="panel-desc">
+              Instead of 100 independent complaints, the system automatically aggregates related reports by spatial proximity (<150m), time window, and computer vision features into unified clusters.
+            </p>
+          </div>
+        </div>
+
+        <div class="clusters-grid" id="clusters-display-grid">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: DEPARTMENTS WORKSPACES -->
+    <div class="cmd-panel" id="cmd-tab-departments">
+      <div class="panel-dark section-container">
+        <div class="panel-inner-header">
+          <div>
+            <h3>Department Operational Workspaces</h3>
+            <p class="panel-desc">Each department sees only what is relevant to its actionable responsibilities.</p>
+          </div>
+          <div class="dept-pills-filter" id="dept-pills-filter">
+            <!-- Populated via JS -->
+          </div>
+        </div>
+
+        <div class="dept-workspace-content" id="dept-workspace-content">
+          <!-- Populated via JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: SLA MONITORING -->
+    <div class="cmd-panel" id="cmd-tab-sla">
+      <div class="panel-dark section-container">
+        <div class="panel-inner-header">
+          <div>
+            <h3>City-Wide SLA & Escalation Monitor</h3>
+            <p class="panel-desc">Proactive warnings before breaches occur. Status categories: Safe • At Risk • Critical • Breached.</p>
+          </div>
+          <div class="sla-overview-stats">
+            <span class="sla-stat-chip green">94.2% Within SLA</span>
+            <span class="sla-stat-chip amber">1 At Risk (&lt;1h)</span>
+            <span class="sla-stat-chip red">0 Breaches</span>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="civic-data-table">
+            <thead>
+              <tr>
+                <th>Cluster / Ticket</th>
+                <th>Issue Category</th>
+                <th>Location & Ward</th>
+                <th>Department</th>
+                <th>SLA Deadline</th>
+                <th>Time Remaining</th>
+                <th>Risk State</th>
+                <th>Escalation Level</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="sla-table-tbody">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: CITY ANALYTICS & TRENDS (OFFICIAL STATUTORY PERFORMANCE & FORMAL INCIDENT REGISTERS) -->
+    <div class="cmd-panel" id="cmd-tab-analytics">
+      <div class="panel-dark section-container">
+        
+        <!-- Official Government Registry Header -->
+        <div class="official-registry-header">
+          <div class="official-emblem-badge">
+            <div class="official-crest-icon">🏛️</div>
+            <div>
+              <div class="official-super-heading">GOVERNMENT OF KARNATAKA • URBAN DEVELOPMENT DEPARTMENT</div>
+              <h3 class="official-registry-title">Statutory Municipal Performance & Formal Incident Registers</h3>
+              <p class="official-registry-sub">
+                Official gazetted administrative records, mandated engineering directives (IRC SP:98-2020), and statutory performance ledgers maintained under the Karnataka Municipal Corporations Act 1976 and Sakala Guarantee of Services Act 2011.
+              </p>
+            </div>
+          </div>
+
+          <!-- Official Key Metrics Ribbon -->
+          <div class="official-metrics-strip">
+            <div class="official-metric-cell">
+              <span class="om-label">STATUTORY REGISTERS</span>
+              <span class="om-val text-teal" id="stat-reg-count">6 Active Forms</span>
+              <span class="om-sub">Form II, IV, VII, IX, XII, XV</span>
+            </div>
+            <div class="official-metric-cell">
+              <span class="om-label">MANDATED SLA RATE</span>
+              <span class="om-val text-green" id="stat-sla-rate">93.4%</span>
+              <span class="om-sub">Under Sakala Act 2011</span>
+            </div>
+            <div class="official-metric-cell">
+              <span class="om-label">POLYMER BITUMEN SAVINGS</span>
+              <span class="om-val text-sky" id="stat-plastic-diverted">14.8 Tons</span>
+              <span class="om-sub">IRC SP:98 Plastic Reused</span>
+            </div>
+            <div class="official-metric-cell">
+              <span class="om-label">GAZETTE AUDIT STATUS</span>
+              <span class="om-val text-amber"><span class="indicator-dot green pulse inline"></span> Gazetted</span>
+              <span class="om-sub">Updated Real-Time</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Official Administrative Sort & Filter Control Bar -->
+        <div class="official-controls-bar">
+          <div class="official-controls-left">
+            <div class="official-control-group">
+              <label class="ctrl-label" for="analytics-sort-select">
+                <span class="ctrl-icon">⚖️</span>
+                <strong>Sort Official Records:</strong>
+              </label>
+              <select id="analytics-sort-select" class="official-sort-select" onchange="civicApp.setAnalyticsSort(this.value)">
+                <option value="form_asc">📜 Statutory Form Order (Form II → XV)</option>
+                <option value="form_desc">📜 Reverse Statutory Order (Form XV → II)</option>
+                <option value="priority">🚨 Priority Grade (Critical Grade-I First)</option>
+                <option value="sla_asc">⏱️ SLA Compliance (Ascending / At-Risk First)</option>
+                <option value="sla_desc">📈 SLA Compliance (Descending / Highest First)</option>
+                <option value="volume_desc">📊 Incident Citations (Highest Volume First)</option>
+                <option value="ward_asc">📍 Ward Jurisdiction (Ward 04 → 22)</option>
+              </select>
+            </div>
+
+            <!-- View Toggle: Gazette Table vs Dossiers -->
+            <div class="official-view-toggle">
+              <button class="view-toggle-btn active" id="btn-view-gazette" onclick="civicApp.setAnalyticsViewMode('gazette')">
+                <span>📜 Gazette Register</span>
+              </button>
+              <button class="view-toggle-btn" id="btn-view-dossier" onclick="civicApp.setAnalyticsViewMode('dossier')">
+                <span>📁 Formal Dossiers</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Directorate Filter Chips -->
+          <div class="official-filter-chips" id="analytics-filter-chips">
+            <button class="official-filter-chip active" data-category="all" onclick="civicApp.setAnalyticsFilter('all')">
+              All Forms (6)
+            </button>
+            <button class="official-filter-chip" data-category="road_polymer" onclick="civicApp.setAnalyticsFilter('road_polymer')">
+              Form VII: Road & Plastic Bitumen
+            </button>
+            <button class="official-filter-chip" data-category="solid_waste" onclick="civicApp.setAnalyticsFilter('solid_waste')">
+              Form IV: Solid Waste Abatement
+            </button>
+            <button class="official-filter-chip" data-category="electrical" onclick="civicApp.setAnalyticsFilter('electrical')">
+              Form IX: High-Voltage Grid
+            </button>
+            <button class="official-filter-chip" data-category="stormwater" onclick="civicApp.setAnalyticsFilter('stormwater')">
+              Form XII: Stormwater Culverts
+            </button>
+            <button class="official-filter-chip" data-category="transit_emergency" onclick="civicApp.setAnalyticsFilter('transit_emergency')">
+              Form II: Emergency Transit
+            </button>
+            <button class="official-filter-chip" data-category="sakala_sla" onclick="civicApp.setAnalyticsFilter('sakala_sla')">
+              Form XV: Sakala Citizen SLAs
+            </button>
+          </div>
+        </div>
+
+        <!-- Dynamic Content Containers -->
+        <!-- VIEW 1: GAZETTE OFFICIAL REGISTER (TABLE LEDGER) -->
+        <div id="analytics-gazette-table-view" class="official-register-view">
+          <!-- Rendered dynamically by JS -->
+        </div>
+
+        <!-- VIEW 2: FORMAL DOSSIERS GRID (CARDS VIEW) -->
+        <div id="analytics-dossiers-view" class="official-register-view" style="display: none;">
+          <!-- Rendered dynamically by JS -->
+        </div>
+
+        <!-- STATUTORY BATCHING TOOL & WORK ORDER (Preserved with exact IDs for test compatibility) -->
+        <div class="statutory-tool-section" id="form-vii-calculator-anchor">
+          <div class="analytics-card calculator-card formal-calc-card">
+            <div class="analytics-header">
+              <div class="formal-calc-title-box">
+                <span class="card-badge green">FORM VII STATUTORY MATERIAL BATCHING TOOL</span>
+                <span class="formal-gazette-badge">IRC SP:98-2020 STANDARDIZED SPECIFICATION</span>
+              </div>
+              <span class="card-ward">Eco-Pave Polymer Simulator • Ward 09 Outer Ring Road</span>
+            </div>
+            <h4>Waste Plastic Bitumen Formulation & Material Batching Engine</h4>
+            <p class="analytics-desc">Real-time statutory engineering formulation for water-resistant road resurfacing (Replacing 8% VG-30 Bitumen with 2.36mm shredded polymer mix):</p>
+            
+            <div class="calc-sliders-box">
+              <div class="calc-slider-group">
+                <div class="slider-header">
+                  <span>Pothole / Road Surface Area:</span>
+                  <strong id="calc-area-val">2.8 m²</strong>
+                </div>
+                <input type="range" min="0.5" max="10.0" step="0.1" value="2.8" class="calc-slider" id="calc-area-slider" oninput="civicApp.updatePlasticCalculator('tab')" />
+              </div>
+
+              <div class="calc-slider-group">
+                <div class="slider-header">
+                  <span>Average Crater Depth:</span>
+                  <strong id="calc-depth-val">14 cm</strong>
+                </div>
+                <input type="range" min="4" max="25" step="1" value="14" class="calc-slider" id="calc-depth-slider" oninput="civicApp.updatePlasticCalculator('tab')" />
+              </div>
+            </div>
+
+            <!-- Dynamic Formulation Results -->
+            <div class="calc-results-grid">
+              <div class="calc-res-item">
+                <span class="res-lbl">2.36mm Plastic Shreds</span>
+                <strong class="res-val text-teal" id="calc-res-plastic">23.5 kg</strong>
+                <span class="res-sub">LDPE + HDPE + PU Blend</span>
+              </div>
+              <div class="calc-res-item">
+                <span class="res-lbl">Refined Coal Tar Binder</span>
+                <strong class="res-val text-sky" id="calc-res-tar">58.8 kg</strong>
+                <span class="res-sub">Hydrophobic VG-30 Matrix</span>
+              </div>
+              <div class="calc-res-item">
+                <span class="res-lbl">Plastic Bottles Diverted</span>
+                <strong class="res-val text-green" id="calc-res-bottles">1,470</strong>
+                <span class="res-sub">From Municipal Landfills</span>
+              </div>
+              <div class="calc-res-item">
+                <span class="res-lbl">CO₂ Emissions Offset</span>
+                <strong class="res-val text-green" id="calc-res-co2">35.2 kg</strong>
+                <span class="res-sub">Carbon Credits Accrued</span>
+              </div>
+            </div>
+
+            <div class="calc-action-row">
+              <button class="btn-generate-work-order" onclick="civicApp.openWorkOrderModal('Cluster #23')">
+                📄 Generate Official Municipal Work Order
+              </button>
+              <span class="official-seal-inline">
+                <span class="seal-mark">✓</span> IRC SP:98-2020 Statutory Compliance Certified
+              </span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- TAB: MEDIROUTE AMBULANCE GREEN CORRIDOR -->
+    <div class="cmd-panel" id="cmd-tab-mediroute">
+      <div class="panel-dark section-container">
+        <div class="panel-inner-header">
+          <div>
+            <h3>MediRoute — Emergency Ambulance Green Corridor</h3>
+            <p class="panel-desc">
+              1.0 km dynamic preemption radius tracks the moving emergency vehicle. Traffic signals synchronize dynamically to clear downstream intersections while overhead VMS screens broadcast live clearance warnings.
+            </p>
+          </div>
+          <div class="corridor-active-pill">
+            <span class="indicator-dot green pulse"></span>
+            <span>CORRIDOR ACTIVE: AMB-09</span>
+          </div>
+        </div>
+
+        <!-- Overhead Digital VMS Screen Simulation -->
+        <div class="overhead-vms-display">
+          <div class="vms-stripe"></div>
+          <div class="vms-heading-row">
+            <span class="vms-tag">OVERHEAD TRAFFIC GANTRY SCREEN (VMS BROADCAST)</span>
+            <span class="vms-stat">RADAR: 1,000 METERS</span>
+          </div>
+          <div class="vms-text blink-glow">
+            “AMBULANCE IS ON ITS WAY — PLEASE MAKE WAY”
+          </div>
+          <div class="vms-subtext">
+            ⚡ EMERGENCY VEHICLE APPROACHING WITHIN 1.0 KM • GREEN CORRIDOR ACTIVE • CLEAR INNER LANE ⚡
+          </div>
+        </div>
+
+        <!-- Controls & Simulator Status -->
+        <div class="mediroute-controls-bar">
+          <button class="btn-primary-teal" id="cmd-btn-start-mediroute" onclick="civicApp.toggleMediRouteSimulation()">
+            ▶ START AMBULANCE JOURNEY (TO APEX TRAUMA CENTER)
+          </button>
+          <button class="btn-secondary-dark" onclick="civicApp.resetMediRouteSimulation()">
+            ↺ Reset
+          </button>
+          <div class="mediroute-telemetry-readout">
+            <span>Speed: <strong id="med-speed-readout">0 km/h</strong></span>
+            <span>Distance: <strong id="med-dist-readout">3.8 km</strong></span>
+            <span>ETA: <strong id="med-eta-readout" class="text-teal">4m 15s</strong></span>
+            <span>Signals Synchronized: <strong id="med-signals-readout" class="text-green">5 / 5</strong></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- =================================================================
+       EXPERIENCE 2: CITIZEN MOBILE EXPERIENCE (MOBILE-FIRST, LIGHT `#F8FAFC`)
+  ================================================================== -->
+  <section class="experience-container" id="exp-citizen">
+    <div class="citizen-device-wrapper">
+      <div class="citizen-phone-chassis">
+        <!-- Phone Status Bar -->
+        <div class="phone-status-bar">
+          <span class="phone-time" id="phone-clock">09:41</span>
+          <div class="phone-status-icons">
+            <span>📶</span> <span>5G</span> <span>🔋 98%</span>
+          </div>
+        </div>
+
+        <!-- Citizen App Header -->
+        <div class="citizen-app-header">
+          <div class="cit-header-left">
+            <div class="cit-avatar">JD</div>
+            <div>
+              <div class="cit-welcome">Namaste, Janardhan</div>
+              <div class="cit-location">📍 Ward 12, Indiranagar • Bengaluru</div>
+            </div>
+          </div>
+          <button class="cit-bell-btn" onclick="civicApp.switchCitizenTab('notifications')">
+            <span>🔔</span>
+            <span class="cit-notif-dot"></span>
+          </button>
+        </div>
+
+        <!-- Citizen Inner Screen Content -->
+        <div class="citizen-screen-scroll">
+          
+          <!-- SUBTAB 1: CITIZEN HOME -->
+          <div class="cit-subtab active" id="cit-tab-home">
+            <!-- Hero "Report an Issue" CTA Button (The Single Most Obvious Action) -->
+            <div class="cit-report-hero-card" onclick="civicApp.switchCitizenTab('report')">
+              <div class="report-hero-glow"></div>
+              <div class="report-hero-content">
+                <div class="hero-camera-icon">📸</div>
+                <div>
+                  <h3 class="report-hero-title">Report an Issue in 20 Seconds</h3>
+                  <p class="report-hero-sub">Photo or voice description • AI detects category & coordinates automatically</p>
+                </div>
+              </div>
+              <button class="btn-hero-tap">Tap to Report →</button>
+            </div>
+
+            <!-- Citizen Verification Alert Card (Signature Trust Loop) -->
+            <div class="cit-card verify-card" id="cit-verify-card">
+              <div class="verify-header">
+                <span class="verify-badge">VERIFICATION NEEDED</span>
+                <span class="verify-time">Resolved 25m ago</span>
+              </div>
+              <h4>Did the Roads Department fix the Pothole on 100 Feet Road?</h4>
+              <p class="text-xs text-muted">Field Team Alpha marked ticket #PC-8102 resolved with photo evidence.</p>
+              <div class="verify-buttons-row">
+                <button class="btn-verify-yes" onclick="civicApp.citizenConfirmResolution(true)">
+                  ✓ Yes, Issue is Resolved
+                </button>
+                <button class="btn-verify-no" onclick="civicApp.citizenConfirmResolution(false)">
+                  ✕ Still an Issue
+                </button>
+              </div>
+            </div>
+
+            <!-- Community Impact Stat -->
+            <div class="cit-impact-banner">
+              <span class="impact-icon">🏆</span>
+              <div class="impact-text">
+                <strong>Your Civic Impact:</strong> Your reports helped resolve <strong>4 safety issues</strong> in your ward this month!
+              </div>
+            </div>
+
+            <!-- Active Reports Quick Peek -->
+            <div class="cit-section-heading">
+              <span>Your Active Reports</span>
+              <a href="#" onclick="civicApp.switchCitizenTab('myreports')">View All →</a>
+            </div>
+            <div class="cit-mini-reports-list" id="cit-home-reports-list">
+              <!-- Populated via JS -->
+            </div>
+          </div>
+
+          <!-- SUBTAB 2: REPORT AN ISSUE (20-30s FLOW) -->
+          <div class="cit-subtab" id="cit-tab-report">
+            <div class="cit-flow-header">
+              <button class="btn-flow-back" onclick="civicApp.switchCitizenTab('home')">←</button>
+              <h3>Report an Issue</h3>
+              <span class="flow-step-pill" id="flow-step-label">Step 1 of 4</span>
+            </div>
+
+            <!-- Step 1: Category Grid -->
+            <div class="report-step active" id="rep-step-1">
+              <h4 class="step-question">What is the problem?</h4>
+              <p class="step-hint">Select category in one tap (no department selection needed):</p>
+              
+              <div class="category-grid">
+                <button class="cat-tile active" data-category="Pothole" onclick="civicApp.selectCitizenCategory('Pothole')">
+                  <span class="cat-icon">🕳️</span>
+                  <span class="cat-name">Pothole</span>
+                </button>
+                <button class="cat-tile" data-category="Garbage" onclick="civicApp.selectCitizenCategory('Garbage')">
+                  <span class="cat-icon">🗑️</span>
+                  <span class="cat-name">Garbage Heap</span>
+                </button>
+                <button class="cat-tile" data-category="Streetlight" onclick="civicApp.selectCitizenCategory('Streetlight')">
+                  <span class="cat-icon">💡</span>
+                  <span class="cat-name">Street Light</span>
+                </button>
+                <button class="cat-tile" data-category="Water Leakage" onclick="civicApp.selectCitizenCategory('Water Leakage')">
+                  <span class="cat-icon">🚰</span>
+                  <span class="cat-name">Water Leakage</span>
+                </button>
+                <button class="cat-tile" data-category="Drainage" onclick="civicApp.selectCitizenCategory('Drainage')">
+                  <span class="cat-icon">🌊</span>
+                  <span class="cat-name">Drainage / Flood</span>
+                </button>
+                <button class="cat-tile" data-category="Power Line" onclick="civicApp.selectCitizenCategory('Power Line')">
+                  <span class="cat-icon">⚡</span>
+                  <span class="cat-name">Sparking Wire</span>
+                </button>
+                <button class="cat-tile" data-category="Traffic" onclick="civicApp.selectCitizenCategory('Traffic')">
+                  <span class="cat-icon">🚦</span>
+                  <span class="cat-name">Traffic Jam</span>
+                </button>
+                <button class="cat-tile" data-category="Other" onclick="civicApp.selectCitizenCategory('Other')">
+                  <span class="cat-icon">⚠️</span>
+                  <span class="cat-name">Other Hazard</span>
+                </button>
+              </div>
+
+              <button class="btn-flow-next" onclick="civicApp.goToReportStep(2)">
+                Continue with <span id="btn-next-cat-name">Pothole</span> →
+              </button>
+            </div>
+
+            <!-- Step 2: Evidence & Voice Description -->
+            <div class="report-step" id="rep-step-2">
+              <h4 class="step-question">Add Evidence & Location</h4>
+              <p class="step-hint">GPS coordinates & photo captured automatically:</p>
+
+              <!-- Photo Attachment, Real File Upload & Real-Time GPS Location Tag -->
+              <div class="cit-photo-box">
+                <!-- File Upload Zone (Supports actual image uploads with EXIF) -->
+                <div class="cit-upload-dragzone" id="cit-upload-dragzone" onclick="document.getElementById('cit-photo-file-input').click()">
+                  <input type="file" id="cit-photo-file-input" accept="image/jpeg,image/png,image/webp,image/*" style="display:none;" onchange="civicApp.handlePhotoFileUpload(event)" />
+                  <div class="upload-zone-content">
+                    <span class="upload-zone-icon">📷</span>
+                    <div class="upload-zone-texts">
+                      <strong>Click to Upload Issue Photograph or Drag & Drop</strong>
+                      <span class="upload-zone-sub">Supports JPEG with camera GPS EXIF metadata (Auto-detects coordinates)</span>
+                    </div>
+                    <button type="button" class="btn-browse-file">Browse File</button>
+                  </div>
+                </div>
+
+                <div class="cit-photo-preview" id="cit-photo-preview">
+                  <img id="cit-preview-img" src="" alt="Captured Evidence" />
+                  <span class="photo-gps-badge" id="photo-gps-tag">📍 GPS: 12.9716° N, 77.5946° E (±2m Accuracy)</span>
+                </div>
+
+                <!-- Instant EXIF & Category Preset Selectors for Interactive Testing -->
+                <div class="photo-presets-wrapper">
+                  <div class="photo-sample-exif-chips">
+                    <span class="exif-sample-lbl">Quick EXIF Test Samples:</span>
+                    <button type="button" class="btn-sample-exif active" onclick="civicApp.simulateExifPhoto('delhi_pothole')">📍 Sample with GPS EXIF (New Delhi Pothole)</button>
+                    <button type="button" class="btn-sample-exif" onclick="civicApp.simulateExifPhoto('no_gps_screenshot')">🚫 Sample without GPS (WhatsApp / Screenshot)</button>
+                  </div>
+
+                  <div class="photo-buttons-row">
+                    <button type="button" class="btn-cit-photo-preset active" data-preset="Pothole" onclick="civicApp.setCitizenPhotoPreset('pothole')">🕳️ Pothole</button>
+                    <button type="button" class="btn-cit-photo-preset" data-preset="Garbage" onclick="civicApp.setCitizenPhotoPreset('garbage')">🗑️ Garbage</button>
+                    <button type="button" class="btn-cit-photo-preset" data-preset="Streetlight" onclick="civicApp.setCitizenPhotoPreset('streetlight')">💡 Streetlight</button>
+                    <button type="button" class="btn-cit-photo-preset" data-preset="Water Leakage" onclick="civicApp.setCitizenPhotoPreset('water_leakage')">🚰 Water Leak</button>
+                    <button type="button" class="btn-cit-photo-preset" data-preset="Drainage" onclick="civicApp.setCitizenPhotoPreset('drainage')">🌊 Drainage</button>
+                    <button type="button" class="btn-cit-photo-preset" data-preset="Power Line" onclick="civicApp.setCitizenPhotoPreset('power_line')">⚡ Power Wire</button>
+                    <button type="button" class="btn-cit-photo-preset" data-preset="Traffic" onclick="civicApp.setCitizenPhotoPreset('traffic')">🚦 Traffic Jam</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- PHOTO ANALYSIS & PHOTO LOCATION CARD (Strict Section 9 Compliance) -->
+              <div class="photo-analysis-card" id="photo-analysis-card">
+                <div class="pac-header">
+                  <span class="pac-badge">PHOTO ANALYSIS</span>
+                  <span class="pac-status-chip" id="pac-status-chip">✓ EXIF Analyzed</span>
+                </div>
+                
+                <div class="pac-grid">
+                  <div class="pac-item">
+                    <span class="pac-lbl">Issue Detected</span>
+                    <strong class="pac-val" id="pac-issue-detected">Pothole</strong>
+                  </div>
+                  <div class="pac-item">
+                    <span class="pac-lbl">AI Confidence</span>
+                    <strong class="pac-val text-teal" id="pac-ai-confidence">94%</strong>
+                  </div>
+                  <div class="pac-item">
+                    <span class="pac-lbl">Severity</span>
+                    <span class="badge-priority high" id="pac-severity">High</span>
+                  </div>
+                </div>
+
+                <!-- PHOTO LOCATION: When GPS is Found -->
+                <div class="pac-location-section" id="pac-gps-found-box">
+                  <div class="pac-sec-title">PHOTO LOCATION</div>
+                  <div class="pac-coords-row">
+                    <span class="pac-pin-icon">📍</span>
+                    <strong class="pac-coords-text" id="pac-coords-val">28.6139, 77.2090</strong>
+                  </div>
+                  <div class="pac-address-text" id="pac-address-val">New Delhi, Delhi, India</div>
+                  
+                  <div class="pac-source-row">
+                    <span class="pac-source-lbl">Location Source:</span>
+                    <span class="location-source-badge exif" id="pac-source-badge">Photo GPS Metadata</span>
+                  </div>
+
+                  <div class="pac-action-buttons">
+                    <button type="button" class="btn-view-on-map" onclick="civicApp.viewUploadedIssueOnMap()">
+                      🗺️ View on Map
+                    </button>
+                    <button type="button" class="btn-edit-location" onclick="civicApp.toggleManualLocationEditor()">
+                      ✏️ Correct / Edit Location
+                    </button>
+                  </div>
+                </div>
+
+                <!-- PHOTO LOCATION: When GPS is Missing -->
+                <div class="pac-location-section unavailable" id="pac-gps-missing-box" style="display:none;">
+                  <div class="pac-sec-title">PHOTO LOCATION</div>
+                  <div class="pac-missing-alert">
+                    <span class="pma-icon">⚠️</span>
+                    <div class="pma-text">
+                      <strong>GPS location was not found in this photo's metadata.</strong>
+                      <p>Location metadata unavailable (common for screenshots, WhatsApp, or compressed photos).</p>
+                    </div>
+                  </div>
+
+                  <div class="pac-fallback-options">
+                    <span class="fallback-prompt">Select a location option to place the issue on the map:</span>
+                    <div class="fallback-btns-row">
+                      <button type="button" class="btn-fallback-action" onclick="civicApp.useDeviceLocation()">
+                        📍 Use My Current Location
+                      </button>
+                      <button type="button" class="btn-fallback-action" onclick="civicApp.selectLocationOnMap()">
+                        🗺️ Select on Map
+                      </button>
+                    </div>
+                    
+                    <div class="address-search-fallback">
+                      <div class="asf-input-wrap">
+                        <input type="text" id="asf-query-input" placeholder="Search address, road, or city across India..." onkeyup="if(event.key==='Enter') civicApp.searchAddressFallback()" />
+                        <button type="button" class="btn-asf-search" onclick="civicApp.searchAddressFallback()">Search Address</button>
+                      </div>
+                      <div class="asf-city-chips">
+                        <span class="asf-chips-lbl">Major Cities:</span>
+                        <button type="button" class="asf-chip" onclick="civicApp.quickSelectCity('Bengaluru')">Bengaluru</button>
+                        <button type="button" class="asf-chip" onclick="civicApp.quickSelectCity('New Delhi')">Delhi</button>
+                        <button type="button" class="asf-chip" onclick="civicApp.quickSelectCity('Mumbai')">Mumbai</button>
+                        <button type="button" class="asf-chip" onclick="civicApp.quickSelectCity('Hyderabad')">Hyderabad</button>
+                        <button type="button" class="asf-chip" onclick="civicApp.quickSelectCity('Chennai')">Chennai</button>
+                        <button type="button" class="asf-chip" onclick="civicApp.quickSelectCity('Kolkata')">Kolkata</button>
+                        <button type="button" class="asf-chip" onclick="civicApp.quickSelectCity('Ahmedabad')">Ahmedabad</button>
+                        <button type="button" class="asf-chip" onclick="civicApp.quickSelectCity('Pune')">Pune</button>
+                        <button type="button" class="asf-chip" onclick="civicApp.quickSelectCity('Jaipur')">Jaipur</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Privacy & Manual Location Correction Drawer -->
+                <div class="pac-editable-drawer" id="pac-editable-drawer" style="display:none;">
+                  <div class="ped-header">
+                    <span>Privacy Safeguard: Verify or Correct Coordinates</span>
+                    <button type="button" class="btn-close-ped" onclick="civicApp.toggleManualLocationEditor()">✕</button>
+                  </div>
+                  <div class="ped-form-grid">
+                    <div>
+                      <label>Latitude</label>
+                      <input type="number" step="0.000001" id="ped-lat-input" placeholder="e.g. 28.6139" />
+                    </div>
+                    <div>
+                      <label>Longitude</label>
+                      <input type="number" step="0.000001" id="ped-lng-input" placeholder="e.g. 77.2090" />
+                    </div>
+                    <div style="grid-column: span 2;">
+                      <label>Resolved Address / Landmark</label>
+                      <input type="text" id="ped-address-input" placeholder="e.g. Near Metro Gate 2, Connaught Place, New Delhi" />
+                    </div>
+                  </div>
+                  <div class="ped-actions">
+                    <button type="button" class="btn-ped-apply" onclick="civicApp.applyManualLocationCoordinates()">Apply & Update Map Marker</button>
+                    <button type="button" class="btn-ped-remove" onclick="civicApp.clearIssueLocation()">Remove Location</button>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- Voice Input Button (Astra 6 Multimodal Multilingual Dictation) -->
+              <div class="cit-voice-box">
+                <div class="voice-lang-picker">
+                  <span class="vlang-lbl">Language:</span>
+                  <button type="button" class="btn-lang-chip active" onclick="civicApp.setVoiceLanguage('kn', this)">ಕನ್ನಡ (Kannada)</button>
+                  <button type="button" class="btn-lang-chip" onclick="civicApp.setVoiceLanguage('hi', this)">हिंदी (Hindi)</button>
+                  <button type="button" class="btn-lang-chip" onclick="civicApp.setVoiceLanguage('en', this)">English</button>
+                  <button type="button" class="btn-lang-chip" onclick="civicApp.setVoiceLanguage('te', this)">తెలుగు (Telugu)</button>
+                </div>
+
+                <button class="btn-voice-mic" id="btn-voice-mic" onclick="civicApp.simulateVoiceInput()">
+                  <span class="mic-icon" id="voice-mic-icon">🎙️</span>
+                  <span class="mic-label" id="voice-btn-label">Tap to Speak in Kannada / Hindi / English</span>
+                </button>
+
+                <!-- Animated Sound Waveform (Active during recording) -->
+                <div class="voice-wave-container" id="voice-wave-container" style="display:none;">
+                  <div class="voice-wave-bars">
+                    <span class="vbar"></span><span class="vbar"></span><span class="vbar"></span>
+                    <span class="vbar"></span><span class="vbar"></span><span class="vbar"></span>
+                    <span class="vbar"></span><span class="vbar"></span><span class="vbar"></span>
+                  </div>
+                  <span class="wave-status-text">Listening... Neural Speech Model active</span>
+                </div>
+
+                <div class="voice-transcript" id="voice-transcript-box">
+                  “There is a huge deep pothole on 100 Feet Road right outside the Indiranagar metro station entrance.”
+                </div>
+              </div>
+
+              <div class="flow-actions-row">
+                <button class="btn-flow-back-inline" onclick="civicApp.goToReportStep(1)">Back</button>
+                <button class="btn-flow-next" onclick="civicApp.goToReportStep(3)">Analyze with AI →</button>
+              </div>
+            </div>
+
+            <!-- Step 3: AI Analysis & Duplicate Check -->
+            <div class="report-step" id="rep-step-3">
+              <h4 class="step-question">Samarth AI Instant Triage</h4>
+              <p class="step-hint">Samarth analyzed your evidence with multimodal vision and checked localized duplicates:</p>
+
+              <!-- Uploaded Evidence & Verified GPS Tag Card -->
+              <div class="step3-evidence-card">
+                <img id="step3-evidence-img" src="" class="step3-thumb" alt="Uploaded Evidence" />
+                <div class="step3-meta">
+                  <span class="step3-title">Photographic Evidence Tagged</span>
+                  <span class="step3-gps" id="step3-gps-tag">📍 GPS: 12.9716° N, 77.5946° E (±2m) • Ward 12</span>
+                  <span class="step3-ai-tag">✓ Samarth Vision Verified (98.4% Confidence)</span>
+                </div>
+              </div>
+
+              <div class="ai-cit-card">
+                <div class="ai-cit-row">
+                  <span class="ai-cit-lbl">Detected Category</span>
+                  <strong class="ai-cit-val" id="ai-cit-cat">Pothole (Road Infrastructure)</strong>
+                </div>
+                <div class="ai-cit-row">
+                  <span class="ai-cit-lbl">Calculated Severity</span>
+                  <span class="badge-priority high" id="ai-cit-sev">HIGH PRIORITY (Near Metro & School)</span>
+                </div>
+                <div class="ai-cit-row">
+                  <span class="ai-cit-lbl">Assigned Department</span>
+                  <strong class="ai-cit-val text-teal" id="ai-cit-dept">Roads Department (BBMP)</strong>
+                </div>
+                
+                <!-- Duplicate Detection & Incident Clustering Callout -->
+                <div class="ai-cluster-match-callout" id="ai-cluster-match-box">
+                  <div class="cluster-match-badge">SAMARTH DEDUPLICATION & CLUSTERING ACTIVE</div>
+                  <p class="cluster-match-txt">
+                    <strong>Cluster #23 Detected:</strong> Samarth AI identified 42 other citizen reports within 120 meters today. Your evidence is merged into <strong>Incident Cluster #23</strong> to elevate urgency!
+                  </p>
+                </div>
+
+                <!-- Municipal Plastic Road Innovation Callout -->
+                <div class="cit-plastic-solution-callout" id="cit-plastic-solution-box">
+                  <div class="cpsc-header">
+                    <span class="cpsc-icon">♻️</span>
+                    <span class="cpsc-badge">IRC SP:98 SUSTAINABLE RECONSTRUCTION PROTOCOL</span>
+                  </div>
+                  <div class="cpsc-body">
+                    <strong>Reconstruction via 2.36mm Plastic Road Innovation</strong>
+                    <p>This crater will be permanently reconstructed using shredded municipal single-use plastic (~2.36mm LDPE/HDPE) — <strong>sourced directly from plastic waste collected through citizen-raised garbage tickets</strong> — mixed with heated bitumen binder, delivering a 100% waterproof seal that stops monsoon potholes and diverts 1,200+ plastic bottles from city landfills.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="flow-actions-row">
+                <button class="btn-flow-back-inline" onclick="civicApp.goToReportStep(2)">Back</button>
+                <button class="btn-flow-next" onclick="civicApp.submitCitizenComplaint()">Confirm & Submit Report ✓</button>
+              </div>
+            </div>
+
+            <!-- Step 4: Submission Success Screen -->
+            <div class="report-step" id="rep-step-4">
+              <div class="cit-success-card">
+                <div class="success-check-circle">✓</div>
+                <h3>Report Submitted Successfully!</h3>
+                <p class="text-sm text-muted">Your report is logged and actively tracked on the city grid.</p>
+
+                <!-- Verified Photographic Evidence Card for Ticket Raised -->
+                <div class="suc-ticket-photo-card" id="suc-ticket-photo-box">
+                  <img id="suc-ticket-img" src="/assets/pothole.jpg" class="suc-ticket-img" alt="Ticket Photographic Evidence" />
+                  <div class="suc-ticket-meta">
+                    <span class="suc-ticket-photo-badge">📷 VERIFIED REALISTIC PHOTO EVIDENCE</span>
+                    <strong class="suc-ticket-photo-title" id="suc-ticket-photo-title">Deep Pothole on 100 Feet Road</strong>
+                    <span class="suc-ticket-photo-gps" id="suc-ticket-photo-gps">📍 GPS Coordinates Auto-Tagged: 12.9716° N, 77.5946° E (±2m)</span>
+                  </div>
+                </div>
+
+                <div class="success-details-card">
+                  <div class="success-row">
+                    <span>Complaint ID</span>
+                    <strong class="text-teal" id="suc-complaint-id">PC-8294</strong>
+                  </div>
+                  <div class="success-row">
+                    <span>GPS Location</span>
+                    <strong class="text-teal" id="suc-gps-loc">📍 12.9716° N, 77.5946° E (±2m)</strong>
+                  </div>
+                  <div class="success-row">
+                    <span>Incident Cluster</span>
+                    <strong>Cluster #23 (43 Reports Merged)</strong>
+                  </div>
+                  <div class="success-row">
+                    <span>Assigned Department</span>
+                    <strong id="suc-dept">Roads Department</strong>
+                  </div>
+                  <div class="success-row">
+                    <span>Estimated Response Time</span>
+                    <strong class="text-amber">Within 45 Minutes</strong>
+                  </div>
+                  <div class="success-row">
+                    <span>Reconstruction Tech</span>
+                    <strong class="text-teal" id="suc-tech-val">♻️ 2.36mm Plastic Bitumen Hydro-Seal (IRC SP:98)</strong>
+                  </div>
+                  <div class="suc-circular-civic-note" style="font-size: 11px; color: #00d2b4; margin-top: 6px; padding: 6px 10px; background: rgba(0, 210, 180, 0.08); border-radius: 6px; border: 1px solid rgba(0, 210, 180, 0.2);">
+                    ♻️ <strong>Circular Civic Loop:</strong> This road reconstruction directly incorporates plastic waste collected from citizen-raised garbage tickets.
+                  </div>
+                  <div class="success-row">
+                    <span>Current Status</span>
+                    <span class="tag-status-pill green">DISPATCHED TO FIELD TEAM</span>
+                  </div>
+                </div>
+
+                <button class="btn-view-track" onclick="civicApp.switchCitizenTab('myreports')">
+                  Track Live on Timeline →
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- SUBTAB 3: MY REPORTS (TRANSPARENT TIMELINE) -->
+          <div class="cit-subtab" id="cit-tab-myreports">
+            <div class="cit-section-heading">
+              <h3>My Reported Issues</h3>
+              <span class="text-xs text-muted" id="my-reports-count">3 Reports</span>
+            </div>
+
+            <div class="my-reports-timeline-list" id="cit-myreports-container">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+          <!-- SUBTAB 4: NEARBY ISSUES (CIVIC PARTICIPATION) -->
+          <div class="cit-subtab" id="cit-tab-nearby">
+            <div class="cit-section-heading">
+              <div>
+                <h3>Issues in Ward 12</h3>
+                <p class="text-xs text-muted">Upvote or confirm issues you see around you:</p>
+              </div>
+            </div>
+
+            <div class="nearby-issues-list" id="cit-nearby-container">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+          <!-- SUBTAB 5: NOTIFICATIONS -->
+          <div class="cit-subtab" id="cit-tab-notifications">
+            <div class="cit-section-heading">
+              <h3>Municipal Updates</h3>
+              <button class="btn-text-xs" onclick="civicApp.markNotifsRead()">Mark All Read</button>
+            </div>
+
+            <div class="cit-notifs-list" id="cit-notifs-container">
+              <!-- Populated via JS -->
+            </div>
+          </div>
+
+        </div>
+
+        <!-- 5-Item Persistent Bottom Navigation Bar (Mandatory Requirement) -->
+        <nav class="citizen-bottom-nav">
+          <button class="cit-nav-item active" data-cit-nav="home" onclick="civicApp.switchCitizenTab('home')">
+            <span class="cit-nav-icon">🏠</span>
+            <span class="cit-nav-lbl">Home</span>
+          </button>
+          <button class="cit-nav-item" data-cit-nav="report" onclick="civicApp.switchCitizenTab('report')">
+            <span class="cit-nav-icon highlight">📸</span>
+            <span class="cit-nav-lbl">Report</span>
+          </button>
+          <button class="cit-nav-item" data-cit-nav="myreports" onclick="civicApp.switchCitizenTab('myreports')">
+            <span class="cit-nav-icon">📋</span>
+            <span class="cit-nav-lbl">My Reports</span>
+          </button>
+          <button class="cit-nav-item" data-cit-nav="nearby" onclick="civicApp.switchCitizenTab('nearby')">
+            <span class="cit-nav-icon">📍</span>
+            <span class="cit-nav-lbl">Nearby</span>
+          </button>
+          <button class="cit-nav-item" data-cit-nav="notifications" onclick="civicApp.switchCitizenTab('notifications')">
+            <span class="cit-nav-icon">🔔</span>
+            <span class="cit-nav-lbl">Alerts</span>
+          </button>
+        </nav>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================================================================
+       EXPERIENCE 3: FIELD OPERATIONS SYSTEM (MOBILE-FIRST, FIELD WORKER)
+  ================================================================== -->
+  <section class="experience-container" id="exp-field-ops">
+    <div class="field-ops-wrapper">
+      <div class="field-worker-phone">
+        <!-- Field Header -->
+        <div class="field-header">
+          <div class="field-user-info">
+            <span class="field-avatar">👷</span>
+            <div>
+              <div class="field-name">Ramesh Kumar (Team Alpha)</div>
+              <div class="field-unit">Roads Department • Rapid Asphalt Crew</div>
+            </div>
+          </div>
+          <!-- Offline Sync Badge -->
+          <div class="field-sync-pill" id="field-sync-pill" title="Local Storage Offline-First Sync">
+            <span class="sync-dot green"></span>
+            <span class="sync-text" id="field-sync-text">Synced</span>
+          </div>
+        </div>
+
+        <!-- Active Assignment Card -->
+        <div class="field-content-scroll">
+          <div class="field-task-card" id="field-task-card">
+            <div class="task-top">
+              <span class="task-badge high">HIGH PRIORITY JOB</span>
+              <span class="task-sla text-amber" id="field-sla-timer">⏱ 42m remaining</span>
+            </div>
+
+            <h3 class="task-title" id="field-task-title">Incident Cluster #23: Deep Pothole on 100 Feet Road</h3>
+            <div class="task-location">📍 Near Metro Pillar 140, Indiranagar (Ward 12)</div>
+
+            <!-- Realistic Citizen Photo Evidence for Field Crew -->
+            <div class="field-evidence-thumb-row">
+              <img id="field-task-img" src="/assets/pothole.jpg" class="field-evidence-photo" alt="Incident Evidence Photo" />
+              <div class="field-evidence-meta">
+                <span class="field-meta-tag">📷 Verified Citizen Photo Evidence</span>
+                <span class="field-meta-sub">Auto-matched to Cluster #23</span>
+              </div>
+            </div>
+
+            <!-- Citizen & AI Summary -->
+            <div class="task-summary-box">
+              <div class="summary-lbl">AI Operational Summary:</div>
+              <p class="summary-txt">
+                43 citizen reports in last 2 hours. Severe wheel-trap crater (14cm depth) causing 17% traffic slowdown and extreme skidding hazard near school.
+              </p>
+            </div>
+
+            <!-- Material Requirement: 2.36mm Waste Plastic Bitumen Specification -->
+            <div class="field-material-spec-box">
+              <div class="mat-spec-title">♻️ Material Specification: Waste Plastic Bitumen</div>
+              <p class="mat-spec-desc">
+                Deploy ~24 kg shredded <strong>LDPE, HDPE, and polyurethane plastic cut to ~2.36 mm</strong> mixed with 65 kg heated coal tar binder. Water-resistant formula prevents rain potholes.
+              </p>
+              <div class="mat-tags">
+                <span>Plastic: 2.36mm Shreds</span>
+                <span>Binder: Coal Tar Bitumen</span>
+                <span>Status: In Truck</span>
+              </div>
+              <button class="btn-field-wo-link" onclick="civicApp.openWorkOrderModal('Cluster #23')" style="margin-top: 10px; width: 100%; background: #1e293b; color: #f8fafc; border: 1px solid #334155; padding: 8px 12px; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                📄 View Official Municipal Work Order (BBMP/ROADS/WO-23)
+              </button>
+            </div>
+
+            <!-- Field Action Buttons Workflow -->
+            <div class="field-actions-flow">
+              <div class="field-step-indicator" id="field-step-indicator">Step: Assigned → Ready to Accept</div>
+              
+              <button class="btn-field-primary btn-accept" id="btn-field-accept" onclick="civicApp.fieldWorkerAcceptJob()">
+                1. ACCEPT ASSIGNMENT
+              </button>
+              
+              <button class="btn-field-primary btn-start" id="btn-field-start" onclick="civicApp.fieldWorkerStartWork()" style="display:none;">
+                2. ARRIVED ON SITE — START WORK
+              </button>
+
+              <button class="btn-field-primary btn-resolve" id="btn-field-resolve" onclick="civicApp.fieldWorkerMarkResolved()" style="display:none;">
+                3. UPLOAD EVIDENCE & MARK RESOLVED ✓
+              </button>
+            </div>
+
+            <!-- Before & After Evidence Preview (Appears on Completion) -->
+            <div class="field-evidence-row" id="field-evidence-row" style="display:none;">
+              <div class="evidence-box">
+                <span class="ev-lbl">Before Repair</span>
+                <img src="" id="img-ev-before" alt="Before Evidence" />
+              </div>
+              <div class="evidence-box">
+                <span class="ev-lbl">After (Plastic Bitumen)</span>
+                <img src="" id="img-ev-after" alt="After Evidence" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================================================================
+       CONTEXTUAL INCIDENT INSPECTION DRAWER (SLIDES FROM RIGHT)
+  ================================================================== -->
+  <aside class="incident-drawer" id="incident-drawer" aria-label="Incident Inspection Drawer">
+    <div class="drawer-header">
+      <div class="drawer-header-left">
+        <span class="drawer-badge" id="drawer-cluster-tag">CLUSTER #23</span>
+        <h3 class="drawer-title" id="drawer-title">Large Road Pothole Cluster</h3>
+      </div>
+      <button class="btn-close-drawer" onclick="civicApp.closeIncidentDrawer()">✕</button>
+    </div>
+
+    <div class="drawer-body">
+      <!-- Transparent AI Priority Explanation -->
+      <div class="drawer-priority-card" id="drawer-priority-card">
+        <div class="dp-header">
+          <span class="dp-label">AI PRIORITY CALCULATION</span>
+          <span class="priority-pill high" id="drawer-priority-pill">HIGH PRIORITY (92/100)</span>
+        </div>
+        <div class="dp-reasoning" id="drawer-priority-reasoning">
+          <strong>Why High Priority:</strong> 43 citizen reports in 2h · Located within 60m of Metro entrance & School · High two-wheeler accident risk · SLA breaches in 42 minutes.
+        </div>
+      </div>
+
+      <!-- Quick Metrics Grid -->
+      <div class="drawer-metrics-grid">
+        <div class="dm-item">
+          <span class="dm-lbl">Merged Reports</span>
+          <strong class="dm-val text-teal" id="drawer-reports-count">43 Citizens</strong>
+        </div>
+        <div class="dm-item">
+          <span class="dm-lbl">SLA Countdown</span>
+          <strong class="dm-val text-amber" id="drawer-sla-val">42m 18s</strong>
+        </div>
+        <div class="dm-item">
+          <span class="dm-lbl">Assigned Department</span>
+          <strong class="dm-val text-sky" id="drawer-dept-val">Roads Department</strong>
+        </div>
+        <div class="dm-item">
+          <span class="dm-lbl">Assigned Crew</span>
+          <strong class="dm-val" id="drawer-crew-val">Team Alpha (Ramesh K.)</strong>
+        </div>
+      </div>
+
+      <!-- Operational AI Summary -->
+      <div class="drawer-section">
+        <h5>🤖 Samarth AI Operational Diagnosis & Spatial Rationale</h5>
+        <p class="drawer-txt" id="drawer-ai-summary">
+          Deep pothole crater (14cm) caused by recurrent water stagnation. Traffic flow delayed by 17%. Recommended deployment of 2.36mm waste-plastic bitumen mix for permanent waterproofing.
+        </p>
+      </div>
+
+      <!-- Location & Evidence -->
+      <div class="drawer-section">
+        <h5>Incident Evidence</h5>
+        <div class="drawer-evidence-preview">
+          <img id="drawer-evidence-img" src="/assets/pothole.jpg" alt="Incident Realistic Photo" style="cursor:zoom-in;" title="Click to open full HD realistic photo inspection" />
+          <div class="drawer-evidence-meta">
+            <span id="drawer-evidence-loc">📍 100 Feet Road, Indiranagar • Ward 12</span>
+            <span class="text-teal">📷 Verified Field Photo Evidence</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Waste-Plastic Bitumen Engineering Calculator -->
+      <div class="drawer-section calculator-card" id="drawer-plastic-calc">
+        <div class="dp-header" style="margin-bottom: 6px;">
+          <h5 style="margin: 0;">🔬 2.36mm Plastic Bitumen Engineering Mix</h5>
+          <span class="status-badge live" style="font-size: 9px; padding: 2px 6px;">IRC SP:98 SPEC</span>
+        </div>
+        <p class="drawer-txt" style="font-size: 11px; margin-bottom: 10px;">
+          Calculates polymer shred ratio (~2.36mm LDPE/HDPE/PU sourced from citizen-raised garbage tickets) & VG-30 tar binder for 100% hydrophobic pothole seal.
+        </p>
+
+        <div class="calc-sliders-box">
+          <div class="calc-slider-group">
+            <div class="slider-header">
+              <span>Pothole Surface Area:</span>
+              <strong><span id="calc-area-val">4.5</span> m²</strong>
+            </div>
+            <input type="range" class="calc-slider" id="calc-slider-area" min="0.5" max="25" step="0.5" value="4.5" oninput="civicApp.updatePlasticCalculator()" />
+          </div>
+
+          <div class="calc-slider-group">
+            <div class="slider-header">
+              <span>Average Crater Depth:</span>
+              <strong><span id="calc-depth-val">12</span> cm</strong>
+            </div>
+            <input type="range" class="calc-slider" id="calc-slider-depth" min="3" max="30" step="1" value="12" oninput="civicApp.updatePlasticCalculator()" />
+          </div>
+        </div>
+
+        <div class="calc-results-grid">
+          <div class="calc-res-item">
+            <span class="res-lbl">Plastic Shreds</span>
+            <span class="res-val text-teal" id="calc-plastic-kg">24.3 kg</span>
+            <span class="res-sub">from citizen tickets</span>
+          </div>
+          <div class="calc-res-item">
+            <span class="res-lbl">VG-30 Coal Tar</span>
+            <span class="res-val text-amber" id="calc-tar-kg">64.8 kg</span>
+            <span class="res-sub">160°C heated</span>
+          </div>
+          <div class="calc-res-item">
+            <span class="res-lbl">Bottles Diverted</span>
+            <span class="res-val text-green" id="calc-bottles-val">1,215</span>
+            <span class="res-sub">recycled from tickets</span>
+          </div>
+          <div class="calc-res-item">
+            <span class="res-lbl">CO₂ Prevented</span>
+            <span class="res-val text-sky" id="calc-co2-val">36.5 kg</span>
+            <span class="res-sub">lifecycle credit</span>
+          </div>
+        </div>
+
+        <button class="btn-generate-work-order" onclick="civicApp.openWorkOrderModal()">
+          📄 Generate Official Municipal Work Order (Print / PDF)
+        </button>
+      </div>
+
+      <!-- Operator Actions -->
+      <div class="drawer-actions-row">
+        <button class="btn-drawer-action teal" onclick="civicApp.operatorDispatchCrew()">
+          ⚡ Dispatch Additional Support Team
+        </button>
+        <button class="btn-drawer-action amber" onclick="civicApp.operatorEscalateSla()">
+          ⚠️ Escalate to Ward Commissioner
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- =================================================================
+       SAMARTH AI CIVIC INTELLIGENCE CONSOLE (CTRL+K / PRESS S)
+  ================================================================== -->
+  <div class="command-palette-backdrop samarth-console-backdrop" id="command-palette-modal" style="display:none;" onclick="civicApp.handlePaletteBackdropClick(event)">
+    <div class="palette-card samarth-console-card">
+      <!-- Samarth Console Header -->
+      <div class="samarth-console-header">
+        <div class="sch-left">
+          <div class="sch-avatar">🤖</div>
+          <div>
+            <div class="sch-brand-row">
+              <h3 class="sch-title">SAMARTH AI (समर्थ)</h3>
+              <span class="sch-status-tag"><span class="indicator-dot green pulse inline"></span> Autonomous Civic Brain Online</span>
+            </div>
+            <p class="sch-subtitle">Autonomous Municipal Triage, Predictive Routing & Statutory Engineering Engine</p>
+          </div>
+        </div>
+        <button class="btn-samarth-close" onclick="civicApp.closeCommandPalette()">✕</button>
+      </div>
+
+      <!-- Natural Language Query Bar -->
+      <div class="palette-input-row samarth-input-row">
+        <span class="palette-icon">💬</span>
+        <input type="text" id="palette-search-input" class="palette-input" placeholder="Ask Samarth anything: 'Which SLAs are at risk?', 'Explain plastic bitumen', 'What are your works?'..." onkeyup="civicApp.handlePaletteInput(event)" />
+        <span class="palette-esc-hint">ESC to close • Press S or ⌘K</span>
+      </div>
+
+      <!-- Quick Interactive Action Chips -->
+      <div class="samarth-quick-chips">
+        <span class="sqc-label">Ask Samarth:</span>
+        <button class="btn-samarth-chip highlight" onclick="civicApp.askSamarthAI('works')">📋 What are Samarth's Works?</button>
+        <button class="btn-samarth-chip" onclick="civicApp.askSamarthAI('sla')">🚨 Check SLA Breaches</button>
+        <button class="btn-samarth-chip" onclick="civicApp.askSamarthAI('plastic')">♻️ Plastic Bitumen (IRC SP:98)</button>
+        <button class="btn-samarth-chip" onclick="civicApp.askSamarthAI('mediroute')">🚑 Launch MediRoute Wave</button>
+        <button class="btn-samarth-chip" onclick="civicApp.askSamarthAI('statutory')">📜 Statutory Forms Register</button>
+        <button class="btn-samarth-chip" onclick="civicApp.askSamarthAI('cluster23')">📍 Inspect Cluster #23</button>
+      </div>
+
+      <!-- Dynamic Samarth AI Reasoning & Intelligence Output Box -->
+      <div class="samarth-ai-output-area" id="samarth-ai-output-area">
+        <!-- Default Welcome & Samarth Core Works Overview populated dynamically -->
+      </div>
+
+      <!-- Fast Matching Shortcut List -->
+      <div class="palette-results-list" id="palette-results-list">
+        <!-- Dynamically populated results -->
+      </div>
+    </div>
+  </div>
+
+  <!-- =================================================================
+       EMERGENCY MODE CRISIS CONFIRMATION MODAL
+  ================================================================== -->
+  <div class="modal-backdrop" id="modal-crisis-confirm" style="display:none;">
+    <div class="modal-crisis-card">
+      <div class="crisis-modal-header">
+        <span class="crisis-icon">⚠️</span>
+        <div>
+          <div class="crisis-eyebrow">HIGH-LEVEL CRISIS MANAGEMENT</div>
+          <h3>Activate Municipal Crisis Operations Mode?</h3>
+        </div>
+      </div>
+      <p class="crisis-desc">
+        Activating Emergency Mode reconfigures the entire Command Center into a unified disaster-grid interface prioritizing emergency SOS events, evacuation shelters, blocked roads, and hospital corridors.
+      </p>
+      <div class="crisis-actions-row">
+        <button class="btn-cancel" onclick="civicApp.closeCrisisModal()">Cancel</button>
+        <button class="btn-crisis-activate" onclick="civicApp.activateEmergencyCrisisMode()">
+          ⚡ Confirm Crisis Operations Mode
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =================================================================
+       HACKATHON 60-SECOND GUIDED DEMO OVERLAY RUNNER
+  ================================================================== -->
+  <div class="guided-demo-overlay" id="guided-demo-overlay" style="display:none;">
+    <div class="demo-card">
+      <div class="demo-card-header">
+        <div class="demo-step-badge">
+          <span>STEP <strong id="demo-step-num">1</strong> OF 12</span>
+        </div>
+        <h4 class="demo-step-title" id="demo-step-title">Citizen Discovers Pothole</h4>
+        <button class="btn-demo-close" onclick="civicApp.stopGuidedDemo()">✕</button>
+      </div>
+      <div class="demo-card-body">
+        <p class="demo-step-narrative" id="demo-step-narrative">
+          Citizen notices a deep pothole on MG Road near the metro station and opens the Citizen App on their mobile phone.
+        </p>
+        <div class="demo-key-takeaway" id="demo-key-takeaway">
+          <strong>Key Innovation:</strong> Zero cognitive load — the citizen does not need to know which government department handles roads.
+        </div>
+      </div>
+      <div class="demo-card-footer">
+        <button class="btn-demo-prev" id="btn-demo-prev" onclick="civicApp.prevDemoStep()">← Prev</button>
+        <div class="demo-progress-dots" id="demo-progress-dots"></div>
+        <button class="btn-demo-next" id="btn-demo-next" onclick="civicApp.nextDemoStep()">Next Step →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =================================================================
+       FLOATING QUICK-SWITCHER DOCK (Astra 6 Fast Navigation)
+  ================================================================== -->
+  <aside class="quick-switcher-dock" id="quick-switcher-dock" aria-label="Quick Experience Switcher">
+    <div class="dock-pill-group">
+      <button class="dock-btn active" id="dock-btn-command" onclick="civicApp.switchExperience('command')" title="Switch to Command Center (Press 1)">
+        <span class="dock-icon">🖥️</span>
+        <span class="dock-label">Command</span>
+        <kbd class="dock-kbd">1</kbd>
+      </button>
+
+      <button class="dock-btn" id="dock-btn-citizen" onclick="civicApp.switchExperience('citizen')" title="Switch to Citizen App (Press 2)">
+        <span class="dock-icon">📱</span>
+        <span class="dock-label">Citizen</span>
+        <kbd class="dock-kbd">2</kbd>
+      </button>
+
+      <button class="dock-btn" id="dock-btn-field" onclick="civicApp.switchExperience('field')" title="Switch to Field Worker Ops (Press 3)">
+        <span class="dock-icon">👷</span>
+        <span class="dock-label">Field Ops</span>
+        <kbd class="dock-kbd">3</kbd>
+      </button>
+
+      <div class="dock-divider"></div>
+
+      <button class="dock-btn samarth" id="dock-btn-samarth" onclick="civicApp.openSamarthConsole()" title="Ask Samarth AI Copilot (Press S)">
+        <span class="dock-icon">🤖</span>
+        <span class="dock-label">Samarth</span>
+        <kbd class="dock-kbd">S</kbd>
+      </button>
+
+      <button class="dock-btn demo" onclick="civicApp.launchGuidedDemo()" title="Run 60s Guided Demo (Press D)">
+        <span class="dock-icon">▶</span>
+        <span class="dock-label">60s Demo</span>
+        <kbd class="dock-kbd">D</kbd>
+      </button>
+
+      <button class="dock-btn audio" id="dock-btn-audio" onclick="civicApp.toggleSound()" title="Toggle Synthesized Audio FX (Press M)">
+        <span class="dock-icon" id="dock-audio-icon">🔊</span>
+        <span class="dock-label" id="dock-audio-label">FX: ON</span>
+        <kbd class="dock-kbd">M</kbd>
+      </button>
+    </div>
+  </aside>
+
+  <!-- =================================================================
+       REALISTIC INCIDENT PHOTO INSPECTION & SAMARTH VISION MODAL
+  ================================================================== -->
+  <div class="modal-backdrop" id="modal-incident-photo" style="display:none;" onclick="civicApp.handlePhotoModalBackdropClick(event)">
+    <div class="modal-photo-viewer-card">
+      <div class="mpv-header">
+        <div class="mpv-header-title-wrap">
+          <span class="mpv-badge">📷 VERIFIED FIELD EVIDENCE</span>
+          <h3 id="mpv-title">Incident Photographic Evidence</h3>
+          <p class="mpv-subtitle" id="mpv-location">📍 100 Feet Road, Indiranagar • Ward 12</p>
+        </div>
+        <div class="mpv-header-actions">
+          <button class="btn-mpv-close" onclick="civicApp.closeIncidentPhotoModal()" title="Close viewer">✕</button>
+        </div>
+      </div>
+
+      <!-- Pothole Solution Switcher (Only visible for reconstructable potholes) -->
+      <div class="mpv-mode-tabs" id="mpv-mode-tabs" style="display:none;">
+        <button class="mpv-tab-btn active" id="mpv-tab-raw" onclick="civicApp.switchPhotoModalTab('raw')">
+          🚧 Incident Photo (Raw Defect)
+        </button>
+        <button class="mpv-tab-btn" id="mpv-tab-solution" onclick="civicApp.switchPhotoModalTab('solution')">
+          ♻️ 2.36mm Plastic Bitumen Solution Proof (IRC SP:98)
+        </button>
+      </div>
+
+      <div class="mpv-body">
+        <div class="mpv-photo-wrapper">
+          <img id="mpv-main-img" src="/assets/pothole.jpg" class="mpv-main-img" alt="Realistic Incident Photo Evidence" />
+          <div class="mpv-overlay-tag" id="mpv-overlay-tag">
+            <span class="mpv-overlay-dot"></span>
+            <span id="mpv-overlay-text">Geo-Verified Field Sensor • 1080p Optical Proof</span>
+          </div>
+        </div>
+
+        <div class="mpv-info-sidebar">
+          <div class="mpv-card-section">
+            <span class="mpv-section-label">🤖 SAMARTH AI VISION DIAGNOSTIC</span>
+            <div class="mpv-samarth-box">
+              <div class="mpv-samarth-badge">
+                <span class="samarth-sparkle">✨</span>
+                <span id="mpv-samarth-verdict">Verified Pothole (Crater Defect)</span>
+              </div>
+              <div class="mpv-confidence-meter">
+                <div class="mpv-conf-header">
+                  <span>Detection Confidence</span>
+                  <strong class="text-teal" id="mpv-confidence-val">98.4%</strong>
+                </div>
+                <div class="mpv-conf-bar"><div class="mpv-conf-fill" id="mpv-conf-fill" style="width: 98.4%;"></div></div>
+              </div>
+              <p class="mpv-samarth-notes" id="mpv-samarth-notes">
+                Sub-surface asphalt fracture and localized depression. Immediate deployment of 2.36mm shredded waste-plastic bitumen mix recommended.
+              </p>
+            </div>
+          </div>
+
+          <div class="mpv-card-section">
+            <span class="mpv-section-label">📋 SENSOR & CIVIC METADATA</span>
+            <div class="mpv-meta-grid">
+              <div class="mpv-meta-row">
+                <span class="mpv-lbl">Category</span>
+                <strong id="mpv-meta-category">Pothole</strong>
+              </div>
+              <div class="mpv-meta-row">
+                <span class="mpv-lbl">Severity</span>
+                <strong class="text-crimson" id="mpv-meta-severity">HIGH PRIORITY</strong>
+              </div>
+              <div class="mpv-meta-row">
+                <span class="mpv-lbl">Coordinates</span>
+                <strong id="mpv-meta-coords">12.9780° N, 77.6405° E</strong>
+              </div>
+              <div class="mpv-meta-row">
+                <span class="mpv-lbl">Responsible Dept</span>
+                <strong id="mpv-meta-dept">Roads Department (BBMP)</strong>
+              </div>
+              <div class="mpv-meta-row">
+                <span class="mpv-lbl">Assigned Unit</span>
+                <strong id="mpv-meta-crew">Team Alpha (Ramesh Kumar)</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="mpv-action-buttons">
+            <button class="btn-mpv-action primary" id="btn-mpv-inspect-drawer" onclick="civicApp.inspectCurrentModalIncident()">
+              Inspect in Command Drawer →
+            </button>
+            <button class="btn-mpv-action secondary" onclick="civicApp.closeIncidentPhotoModal()">
+              Close Viewer
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =================================================================
+       OFFICIAL MUNICIPAL WORK ORDER MODAL (PRINTABLE / PDF READY)
+  ================================================================== -->
+  <div class="modal-backdrop" id="modal-work-order" style="display:none;" onclick="civicApp.handleWorkOrderBackdropClick(event)">
+    <div class="modal-work-order-card">
+      <div class="wo-header-controls">
+        <span class="wo-stamp">OFFICIAL GOVERNMENT DOCUMENT</span>
+        <div class="wo-ctrl-btns">
+          <button class="btn-print-wo" onclick="window.print()">🖨️ Print / Save PDF</button>
+          <button class="btn-close-wo" onclick="civicApp.closeWorkOrderModal()">✕</button>
+        </div>
+      </div>
+
+      <!-- Official Letterhead -->
+      <div class="wo-letterhead">
+        <div class="wo-emblem">🏛️</div>
+        <div>
+          <h2 class="wo-govt-title" id="wo-corp-title">BRUHAT BENGALURU MAHANAGARA PALIKE (BBMP)</h2>
+          <div class="wo-dept-title">DEPARTMENT OF ROADS & INFRASTRUCTURE RESILIENCE</div>
+          <div class="wo-ref-row">
+            <span>OFFICIAL WORK AUTHORIZATION ORDER</span> • 
+            <span>REF: <strong id="wo-ticket-ref">BBMP/ROADS/2026/WO-23</strong></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Meta Grid -->
+      <div class="wo-meta-grid">
+        <div class="wo-meta-item">
+          <span class="wom-lbl">ISSUE DATE & TIME:</span>
+          <strong class="wom-val" id="wo-date-val">12-SEP-2026 08:35:10 IST</strong>
+        </div>
+        <div class="wo-meta-item">
+          <span class="wom-lbl">PRIORITY LEVEL:</span>
+          <strong class="wom-val text-crimson">HIGH • 45-MIN SLA MANDATE</strong>
+        </div>
+        <div class="wo-meta-item">
+          <span class="wom-lbl">INCIDENT LOCATION:</span>
+          <strong class="wom-val" id="wo-location-val">100 Feet Road, Near Metro Pillar 140, Indiranagar (Ward 12)</strong>
+        </div>
+        <div class="wo-meta-item">
+          <span class="wom-lbl">ASSIGNED RAPID CREW:</span>
+          <strong class="wom-val" id="wo-crew-val">Team Alpha (Supervisor: Ramesh Kumar)</strong>
+        </div>
+      </div>
+
+      <!-- Attached Realistic Site Photographic Evidence -->
+      <div class="wo-photo-attachment">
+        <img id="wo-evidence-img" src="/assets/pothole.jpg" class="wo-evidence-thumb" alt="Site Survey Photo" />
+        <div class="wo-photo-meta">
+          <strong>ATTACHED SITE PHOTOGRAPHIC EVIDENCE</strong>
+          <p id="wo-photo-desc">Photometric scan: 14cm crater depth, Ward 12. Approved for 2.36mm waste-plastic bitumen reconstruction.</p>
+        </div>
+      </div>
+
+      <!-- Bill of Materials Table (BOM) -->
+      <div class="wo-bom-section">
+        <h4 class="wo-section-heading">AUTHORIZED BILL OF MATERIALS (ECO-PAVE POLYMER RESURFACING)</h4>
+        <table class="wo-bom-table">
+          <thead>
+            <tr>
+              <th>Item #</th>
+              <th>Material Specification</th>
+              <th>Quantity</th>
+              <th>Unit</th>
+              <th>Technical Purpose</th>
+            </tr>
+          </thead>
+          <tbody id="wo-bom-tbody">
+            <tr>
+              <td>1</td>
+              <td><strong>Shredded Waste Plastics (LDPE/HDPE/PU)</strong> (~2.36 mm grain size — sourced from citizen-raised garbage tickets)</td>
+              <td id="wo-mat-plastic-qty">24.0</td>
+              <td>KG</td>
+              <td>Impervious Hydrophobic Structural Reinforcement (Circular Civic Ticket Recovery)</td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td><strong>Refined Bitumen Binder (VG-30 Heated Coal Tar)</strong></td>
+              <td id="wo-mat-tar-qty">65.0</td>
+              <td>KG</td>
+              <td>High-Penetration Thermal Elastic Matrix</td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td>Crushed Stone Aggregate (10mm - 12mm)</td>
+              <td>180.0</td>
+              <td>KG</td>
+              <td>Compressive Load Bearing Sub-Base</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Authorization Signatures -->
+      <div class="wo-signature-row">
+        <div class="sig-block">
+          <div class="sig-line"></div>
+          <span class="sig-name">Superintending Engineer (Roads)</span>
+          <span class="sig-title">Digital Signature Validated ✓</span>
+        </div>
+        <div class="sig-block">
+          <div class="sig-line"></div>
+          <span class="sig-name">Field Crew Acceptance</span>
+          <span class="sig-title">GPS Verification Bound</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Local Leaflet JS -->
+  <script src="leaflet.js"></script>
+
+  <!-- Main Production Application Script -->
+  <script src="app.js"></script>
+</body>
+</html>

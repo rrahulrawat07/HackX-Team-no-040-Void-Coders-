@@ -1,0 +1,16 @@
+# Dependencies & Build
+node_modules/
+.DS_Store
+Thumbs.db
+*.log
+*.pyc
+__pycache__/
+
+# Scratch / Docs
+*.pdf
+hackx
+hackx final/
+
+# Agent local skills cache
+.agents/
+skills-lock.json

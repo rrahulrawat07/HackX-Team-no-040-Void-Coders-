@@ -1,0 +1,1385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>BIT 1001 Assignment I - Sukarn Kumar (2602050874)</title>
+<style>
+  @page {
+    size: A4 portrait;
+    margin: 0;
+  }
+  * {
+    box-sizing: border-box;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background-color: #ffffff;
+    font-family: "Times New Roman", Times, serif;
+    font-size: 12pt;
+    line-height: 1.34;
+    color: #111111;
+  }
+  .page {
+    width: 210mm;
+    height: 297mm;
+    max-height: 297mm;
+    min-height: 297mm;
+    padding: 12mm 16mm 10mm 16mm;
+    margin: 0 auto;
+    page-break-after: always;
+    break-after: page;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: #ffffff;
+  }
+  .page:last-child {
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+
+  /* Academic Header Banner for Pages 2-12 */
+  .academic-header {
+    border: 1.5px solid #1a5276;
+    border-radius: 4px;
+    background: linear-gradient(180deg, #edf4f9 0%, #e2ecf5 100%);
+    padding: 6px 12px 5px 12px;
+    margin-bottom: 9px;
+    text-align: center;
+  }
+  .inst-title {
+    font-size: 12.5pt;
+    font-weight: bold;
+    color: #0f3148;
+    letter-spacing: 0.5px;
+    margin-bottom: 2px;
+  }
+  .dept-title {
+    font-size: 10.5pt;
+    font-weight: 600;
+    color: #1b4f72;
+    margin-bottom: 2px;
+  }
+  .course-title {
+    font-size: 10.5pt;
+    font-weight: bold;
+    color: #2c3e50;
+    margin-bottom: 4px;
+  }
+  .meta-bar {
+    display: flex;
+    justify-content: space-between;
+    font-size: 10pt;
+    font-weight: bold;
+    color: #1a365d;
+    border-top: 1px solid #a9cce3;
+    padding-top: 3px;
+  }
+
+  /* Question Banner */
+  .question-box {
+    background-color: #f6f9fc;
+    border-left: 4px solid #1a5276;
+    border-top: 1px solid #d4e6f1;
+    border-right: 1px solid #d4e6f1;
+    border-bottom: 1px solid #d4e6f1;
+    padding: 7px 11px;
+    margin-bottom: 8px;
+    font-size: 14pt;
+    font-weight: bold;
+    line-height: 1.32;
+    color: #0c2340;
+  }
+  .marks-badge {
+    float: right;
+    font-size: 10.5pt;
+    font-weight: bold;
+    color: #1a5276;
+    background: #eaf2f8;
+    padding: 2px 7px;
+    border-radius: 3px;
+    border: 1px solid #bcd7ea;
+    margin-left: 8px;
+  }
+
+  /* Section Headings */
+  h2.sec-heading {
+    font-size: 12.5pt;
+    font-weight: bold;
+    color: #154360;
+    margin-top: 4px;
+    margin-bottom: 3px;
+    border-bottom: 1px solid #154360;
+    padding-bottom: 1px;
+  }
+  h3.sub-heading {
+    font-size: 11.5pt;
+    font-weight: bold;
+    color: #1b4f72;
+    margin-top: 4px;
+    margin-bottom: 2px;
+  }
+
+  /* Content typography */
+  .content-body {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+  p {
+    font-size: 12pt;
+    margin-top: 0;
+    margin-bottom: 6px;
+    text-align: justify;
+    text-justify: inter-word;
+  }
+  ul, ol {
+    margin-top: 0;
+    margin-bottom: 6px;
+    padding-left: 19px;
+    font-size: 12pt;
+  }
+  li {
+    margin-bottom: 2.5px;
+    text-align: justify;
+  }
+
+  /* Tables */
+  table.academic-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 5px 0 6px 0;
+    font-size: 10pt;
+  }
+  table.academic-table th {
+    background-color: #1a5276;
+    color: #ffffff;
+    font-weight: bold;
+    padding: 4px 6px;
+    border: 1px solid #154360;
+    text-align: left;
+    font-size: 10pt;
+  }
+  table.academic-table td {
+    padding: 3.5px 6px;
+    border: 1px solid #cbd5e1;
+    vertical-align: top;
+    text-align: left;
+    line-height: 1.24;
+  }
+  table.academic-table tr:nth-child(even) {
+    background-color: #f7fafc;
+  }
+  .table-caption {
+    font-size: 9pt;
+    font-style: italic;
+    text-align: center;
+    color: #4a5568;
+    margin-top: 1px;
+    margin-bottom: 5px;
+  }
+
+  /* Figure Captions */
+  .fig-container {
+    text-align: center;
+    margin: 4px 0 6px 0;
+  }
+  .fig-caption {
+    font-size: 9pt;
+    font-style: italic;
+    color: #334155;
+    margin-top: 2px;
+    margin-bottom: 3px;
+  }
+
+  /* Key Callout Box */
+  .callout-box {
+    background-color: #f0f7fb;
+    border-left: 3.5px solid #2980b9;
+    padding: 5px 9px;
+    margin: 4px 0 6px 0;
+    border-radius: 0 4px 4px 0;
+    font-size: 10.5pt;
+  }
+
+  /* Academic Footer */
+  .academic-footer {
+    border-top: 1px solid #bdc3c7;
+    padding-top: 3px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 9pt;
+    color: #566573;
+  }
+
+  /* Page 1 Specific Styling */
+  .p1-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    padding: 6mm 4mm;
+  }
+  .p1-student-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12pt;
+    margin-bottom: 26mm;
+  }
+  .p1-center-header {
+    text-align: center;
+    margin-bottom: 12mm;
+  }
+  .p1-center-header .uni-name {
+    font-size: 15pt;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  .p1-center-header .dept-name {
+    font-size: 13pt;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  .p1-center-header .course-name {
+    font-size: 13pt;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  .p1-center-header .assign-title {
+    font-size: 13pt;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  .p1-sub-date {
+    text-align: right;
+    font-size: 12pt;
+    font-weight: bold;
+    margin-bottom: 18mm;
+  }
+  .p1-question-block {
+    margin-bottom: 16mm;
+  }
+  .p1-question-text {
+    font-size: 14pt;
+    font-weight: bold;
+    line-height: 1.42;
+    text-align: justify;
+  }
+  .p1-marks {
+    text-align: right;
+    font-size: 12pt;
+    margin-top: 4px;
+  }
+  .p1-evaluation-notice {
+    font-size: 12pt;
+    font-weight: bold;
+    line-height: 1.4;
+    margin-top: 15mm;
+  }
+</style>
+</head>
+<body>
+
+<!-- =================================================================== -->
+<!-- PAGE 1: OFFICIAL FRONT QUESTION PAPER & STUDENT CREDENTIALS         -->
+<!-- =================================================================== -->
+<div class="page" id="page-1">
+  <div class="p1-container">
+    <div>
+      <div class="p1-student-info">
+        <div><strong>Name:</strong> Sukarn Kumar</div>
+        <div><strong>Registration Number:</strong> 2602050874</div>
+      </div>
+
+      <div class="p1-center-header">
+        <div class="uni-name">Manipal University Jaipur</div>
+        <div class="dept-name">(Department of Biotechnology and Chemical Engineering)</div>
+        <div class="course-name">Biology for Engineers (BIT 1001)</div>
+        <div class="assign-title">Assignment I</div>
+      </div>
+
+      <div class="p1-sub-date">
+        Submission Date: 31-08-2026
+      </div>
+
+      <div class="p1-question-block">
+        <div class="p1-question-text">
+          Q1. A biofuel company has access to three carbohydrate-rich raw materials: sugar-rich waste, starch-rich agricultural material, and cellulose-rich plant biomass. The company wants to produce bioethanol. Compare these feedstocks and recommend the most suitable one based on the ease of carbohydrate conversion and ethanol production. Justify your choice.
+        </div>
+        <div class="p1-marks">(10 marks)</div>
+      </div>
+
+      <div class="p1-question-block">
+        <div class="p1-question-text">
+          Q2. Enzymes are added to many modern detergents. Explain the role of protein-based enzymes in detergents and discuss how their properties help improve cleaning efficiency.
+        </div>
+        <div class="p1-marks">(10 marks)</div>
+      </div>
+    </div>
+
+    <div class="p1-evaluation-notice">
+      Evaluation would be equally based on Technical Writing, Layout, Presentation and Innovation
+    </div>
+  </div>
+</div>
+
+<!-- =================================================================== -->
+<!-- PAGE 2: QUESTION 1 - INTRODUCTION & BIOCHEMICAL CLASSIFICATION     -->
+<!-- =================================================================== -->
+<div class="page" id="page-2">
+  <div>
+    <div class="academic-header">
+      <div class="inst-title">MANIPAL UNIVERSITY JAIPUR</div>
+      <div class="dept-title">Department of Biotechnology and Chemical Engineering</div>
+      <div class="course-title">Biology for Engineers (BIT 1001) — Assignment I</div>
+      <div class="meta-bar">
+        <span>Name: Sukarn Kumar</span>
+        <span>Reg. No.: 2602050874</span>
+        <span>Submission Date: 31-08-2026</span>
+      </div>
+    </div>
+
+    <div class="question-box">
+      <span class="marks-badge">10 Marks</span>
+      <b>Q1. A biofuel company has access to three carbohydrate-rich raw materials: sugar-rich waste, starch-rich agricultural material, and cellulose-rich plant biomass. The company wants to produce bioethanol. Compare these feedstocks and recommend the most suitable one based on the ease of carbohydrate conversion and ethanol production. Justify your choice.</b>
+    </div>
+
+    <div class="content-body">
+      <h2 class="sec-heading">1.1 Introduction & Theoretical Engineering Foundations</h2>
+      <p>
+        Bioethanol (ethyl alcohol, C<sub>2</sub>H<sub>5</sub>OH) is the premier liquid renewable biofuel globally, synthesized through microbial fermentation of plant carbohydrates by ethanologens, predominantly <em>Saccharomyces cerevisiae</em>. In modern low-carbon transport architectures, bioethanol serves as a direct drop-in oxygenate for petrol (e.g., E10, E20), substantially lowering lifecycle greenhouse emissions. The production paradigm comprises three fundamental unit operation phases: (i) <em>Upstream Feedstock Deconstruction & Hydrolysis</em>, liberating fermentable sugars; (ii) <em>Microbial Glycolytic Fermentation</em>; and (iii) <em>Downstream Rectification & Molecular Sieve Dewatering</em> to yield fuel-grade 99.6% v/v bioethanol.
+      </p>
+
+      <h2 class="sec-heading">1.2 Feedstock Categorisation & Biochemical Nature</h2>
+      <p>
+        The three candidate raw materials represent distinct generational biofuel classes:
+      </p>
+      <ul>
+        <li><strong>Sugar-Rich Waste (First-Generation / 1G Agro-Waste):</strong> Sourced from sugar refining (blackstrap molasses, cane juice) and fruit processing rejects. Contains simple, directly fermentable mono- and disaccharides (sucrose, glucose, fructose).</li>
+        <li><strong>Starch-Rich Agricultural Material (First-Generation / 1G Grains):</strong> Derived from corn (maize), wheat, and cassava tubers. Carbohydrates exist as semicrystalline storage granules composed of amylose and amylopectin α-glucan biopolymers.</li>
+        <li><strong>Cellulose-Rich Plant Biomass (Second-Generation / 2G Lignocellulose):</strong> Comprising agricultural crop residues (sugarcane bagasse, wheat straw, rice husk) and woody biomass. Carbohydrates are embedded within an intricate, recalcitrant matrix of crystalline cellulose, hemicellulose, and cross-linked aromatic lignin polymers.</li>
+      </ul>
+
+      <div class="fig-container">
+        <svg width="670" height="90" viewBox="0 0 670 90">
+          <rect x="5" y="10" width="205" height="70" rx="6" fill="#eaf2f8" stroke="#2980b9" stroke-width="1.5"/>
+          <text x="107" y="32" font-family="Times New Roman" font-size="11" font-weight="bold" fill="#154360" text-anchor="middle">SUGAR-RICH WASTE</text>
+          <text x="107" y="48" font-family="Times New Roman" font-size="9.5" fill="#333" text-anchor="middle">Sucrose (α-1,2) + Glucose + Fructose</text>
+          <text x="107" y="64" font-family="Times New Roman" font-size="9.5" font-weight="bold" fill="#27ae60" text-anchor="middle">Direct Cleavage (Yeast Invertase)</text>
+
+          <rect x="233" y="10" width="205" height="70" rx="6" fill="#fcf3cf" stroke="#f39c12" stroke-width="1.5"/>
+          <text x="335" y="32" font-family="Times New Roman" font-size="11" font-weight="bold" fill="#7d6608" text-anchor="middle">STARCH-RICH MATERIAL</text>
+          <text x="335" y="48" font-family="Times New Roman" font-size="9.5" fill="#333" text-anchor="middle">Amylose (α-1,4) + Amylopectin (α-1,6)</text>
+          <text x="335" y="64" font-family="Times New Roman" font-size="9.5" font-weight="bold" fill="#d35400" text-anchor="middle">Cooking + α-Amylase + Glucoamylase</text>
+
+          <rect x="460" y="10" width="205" height="70" rx="6" fill="#fadbd8" stroke="#c0392b" stroke-width="1.5"/>
+          <text x="562" y="32" font-family="Times New Roman" font-size="11" font-weight="bold" fill="#78281f" text-anchor="middle">CELLULOSE-RICH BIOMASS</text>
+          <text x="562" y="48" font-family="Times New Roman" font-size="9.5" fill="#333" text-anchor="middle">Crystalline Cellulose (β-1,4) + Lignin</text>
+          <text x="562" y="64" font-family="Times New Roman" font-size="9.5" font-weight="bold" fill="#c0392b" text-anchor="middle">Severe Pretreatment + Enzyme Cocktails</text>
+        </svg>
+        <div class="fig-caption">Figure 1.1: Chemical classification, bond linkage topology, and required deconstruction intensity for the three feedstocks.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="academic-footer">
+    <span>Department of Biotechnology and Chemical Engineering, MUJ</span>
+    <span>BIT 1001: Biology for Engineers — Assignment I</span>
+    <span>Page 2 of 12</span>
+  </div>
+</div>
+
+<!-- =================================================================== -->
+<!-- PAGE 3: QUESTION 1 - DETAILED BIOCHEMICAL CONVERSION PATHWAYS       -->
+<!-- =================================================================== -->
+<div class="page" id="page-3">
+  <div>
+    <div class="academic-header">
+      <div class="inst-title">MANIPAL UNIVERSITY JAIPUR</div>
+      <div class="dept-title">Department of Biotechnology and Chemical Engineering</div>
+      <div class="course-title">Biology for Engineers (BIT 1001) — Assignment I</div>
+      <div class="meta-bar">
+        <span>Name: Sukarn Kumar</span>
+        <span>Reg. No.: 2602050874</span>
+        <span>Submission Date: 31-08-2026</span>
+      </div>
+    </div>
+
+    <div class="content-body">
+      <h2 class="sec-heading">1.3 Detailed Examination of Feedstock Biochemical Architecture</h2>
+
+      <h3 class="sub-heading">1.3.1 Sugar-Rich Waste: Direct Invertase Cleavage & Rapid Uptake</h3>
+      <p>
+        Sugar-rich waste streams, particularly cane molasses (comprising ~48–55% w/w fermentable sugars) and citrus fruit processing waste, contain non-structural mono- and disaccharides: sucrose, free D-glucose, and D-fructose. The molecular bond in sucrose is an α-1,2-glycosidic bond linking α-D-glucopyranosyl and β-D-fructofuranosyl rings. This bond possesses minimal steric hindrance and low thermodynamic activation energy (ΔG°' ≈ -27.6 kJ/mol).
+      </p>
+      <p>
+        Industrial <em>Saccharomyces cerevisiae</em> strains naturally secrete large amounts of periplasmic <strong>invertase</strong> (β-fructofuranosidase, EC 3.2.1.26). As sucrose diffuses across the outer cell wall, invertase rapidly hydrolyses it at the outer membrane surface into equimolar D-glucose and D-fructose:
+      </p>
+      <div style="text-align: center; font-weight: bold; margin: 4px 0; font-size: 11pt;">
+        C<sub>12</sub>H<sub>22</sub>O<sub>11</sub> (Sucrose) + H<sub>2</sub>O &nbsp;<span style="display:inline-block; border-bottom:1.5px solid #1a5276; padding:0 6px; font-size:9.5pt; color:#1a5276;">Invertase</span>&rarr;&nbsp; C<sub>6</sub>H<sub>12</sub>O<sub>6</sub> (Glucose) + C<sub>6</sub>H<sub>12</sub>O<sub>6</sub> (Fructose)
+      </div>
+      <p>
+        Both hexose monosaccharides are promptly imported via facilitated diffusion through hexose permeases (Hxt1-Hxt17) directly into the Embden-Meyerhof-Parnas (EMP) glycolytic pathway. No external enzyme additions or thermal pre-cooking unit operations are required.
+      </p>
+
+      <h3 class="sub-heading">1.3.2 Starch-Rich Agricultural Material: Gelatinisation & Two-Step Hydrolysis</h3>
+      <p>
+        Starch is a high-density energy storage biopolymer composed of two α-glucan fractions: linear <strong>amylose</strong> (20–30%, linked by α-1,4-glycosidic bonds) and highly branched <strong>amylopectin</strong> (70–80%, with α-1,4 backbones and α-1,6 branch points every 24–30 residues). Because native yeast strains lack amylolytic enzymes, conversion mandates a two-stage thermochemical and enzymatic digest:
+      </p>
+      <ol>
+        <li><em>Gelatinisation & Liquefaction:</em> Aqueous slurry (30–35% dry solids) is jet-cooked at 85–105°C with thermostable endo-α-amylase (EC 3.2.1.1 from <em>B. licheniformis</em>), cleaving interior α-1,4 bonds and slashing slurry viscosity to produce soluble dextrins.</li>
+        <li><em>Saccharification:</em> The liquor is cooled to 55–60°C and dosed with exo-acting glucoamylase (EC 3.2.1.3 from <em>A. niger</em>), which hydrolyses α-1,4 and α-1,6 bonds from non-reducing ends, liberating free D-glucose for fermentation.</li>
+      </ol>
+
+      <div class="fig-container">
+        <svg width="670" height="92" viewBox="0 0 670 92">
+          <rect x="5" y="8" width="180" height="74" rx="6" fill="#e8f8f5" stroke="#16a085" stroke-width="1.5"/>
+          <text x="95" y="28" font-family="Times New Roman" font-size="11" font-weight="bold" fill="#0e6251" text-anchor="middle">Native Starch Granule</text>
+          <text x="95" y="44" font-family="Times New Roman" font-size="9.5" fill="#333" text-anchor="middle">Amylose (α-1,4)</text>
+          <text x="95" y="58" font-family="Times New Roman" font-size="9.5" fill="#333" text-anchor="middle">Amylopectin (α-1,6 branches)</text>
+          <text x="95" y="73" font-family="Times New Roman" font-size="9" fill="#c0392b" text-anchor="middle">Insoluble & Unfermentable</text>
+
+          <path d="M 190 45 L 230 45" stroke="#333" stroke-width="2"/>
+
+          <rect x="235" y="8" width="195" height="74" rx="6" fill="#fef9e7" stroke="#f1c40f" stroke-width="1.5"/>
+          <text x="332" y="28" font-family="Times New Roman" font-size="11" font-weight="bold" fill="#7d6608" text-anchor="middle">Liquefied Dextrin Slurry</text>
+          <text x="332" y="44" font-family="Times New Roman" font-size="9.5" fill="#333" text-anchor="middle">Cleaved by α-Amylase (85-105°C)</text>
+          <text x="332" y="58" font-family="Times New Roman" font-size="9.5" fill="#333" text-anchor="middle">Oligosaccharides & Dextrins</text>
+          <text x="332" y="73" font-family="Times New Roman" font-size="9" fill="#27ae60" text-anchor="middle">Viscosity reduced by 90%</text>
+
+          <path d="M 435 45 L 475 45" stroke="#333" stroke-width="2"/>
+
+          <rect x="480" y="8" width="185" height="74" rx="6" fill="#eaf2f8" stroke="#2980b9" stroke-width="1.5"/>
+          <text x="572" y="28" font-family="Times New Roman" font-size="11" font-weight="bold" fill="#1b4f72" text-anchor="middle">D-Glucose Monomers</text>
+          <text x="572" y="44" font-family="Times New Roman" font-size="9.5" fill="#333" text-anchor="middle">Exo-cleavage by Glucoamylase (60°C)</text>
+          <text x="572" y="58" font-family="Times New Roman" font-size="9.5" fill="#333" text-anchor="middle">Free Monomeric Hexose</text>
+          <text x="572" y="73" font-family="Times New Roman" font-size="9" font-weight="bold" fill="#2980b9" text-anchor="middle">Ready for Yeast Glycolysis</text>
+        </svg>
+        <div class="fig-caption">Figure 1.2: Two-stage thermochemical and enzymatic breakdown of starch polymers into fermentable glucose.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="academic-footer">
+    <span>Department of Biotechnology and Chemical Engineering, MUJ</span>
+    <span>BIT 1001: Biology for Engineers — Assignment I</span>
+    <span>Page 3 of 12</span>
+  </div>
+</div>
+
+<!-- =================================================================== -->
+<!-- PAGE 4: QUESTION 1 - CELLULOSE RECALCITRANCE & COMPARISON TABLE     -->
+<!-- =================================================================== -->
+<div class="page" id="page-4">
+  <div>
+    <div class="academic-header">
+      <div class="inst-title">MANIPAL UNIVERSITY JAIPUR</div>
+      <div class="dept-title">Department of Biotechnology and Chemical Engineering</div>
+      <div class="course-title">Biology for Engineers (BIT 1001) — Assignment I</div>
+      <div class="meta-bar">
+        <span>Name: Sukarn Kumar</span>
+        <span>Reg. No.: 2602050874</span>
+        <span>Submission Date: 31-08-2026</span>
+      </div>
+    </div>
+
+    <div class="content-body">
+      <h3 class="sub-heading">1.3.3 Cellulose-Rich Plant Biomass: The Severe Barrier of Lignocellulose Recalcitrance</h3>
+      <p>
+        Cellulose shares the same monomer (D-glucose) as amylose, but differs critically in possessing <strong>β-(1→4)-glycosidic linkages</strong>, where every alternate pyranose ring is rotated 180°. This stereochemical geometry forces the polymer into planar, ribbon-like configurations stabilized by extensive intra-chain (O3-H···O5') and inter-chain (O6-H···O3') hydrogen bonds, producing highly impervious crystalline microfibrils.
+      </p>
+      <p>
+        In plant cell walls, cellulose microfibrils are bundled within amorphous hemicellulose (arabinoxylan) and armored by <strong>lignin</strong>—a hydrophobic, complex 3D aromatic polymer of cross-linked phenylpropanoid units. Lignin physically blocks enzyme access, non-productively adsorbs cellulases, and requires severe thermochemical pretreatment (e.g., dilute H<sub>2</sub>SO<sub>4</sub> at 180–220°C or steam explosion). This harsh treatment degrades pentose sugars into potent microbial inhibitors: furfural, 5-hydroxymethylfurfural (5-HMF), acetic acid, and toxic phenolics that inhibit downstream yeast fermentation.
+      </p>
+
+      <h2 class="sec-heading">1.4 Comprehensive Multi-Parameter Comparative Matrix</h2>
+      <p>
+        Table 1.1 provides an engineering comparison across key thermodynamic, enzymatic, economic, and operational performance metrics:
+      </p>
+
+      <table class="academic-table">
+        <thead>
+          <tr>
+            <th style="width: 22%;">Evaluation Parameter</th>
+            <th style="width: 26%;">Sugar-Rich Waste</th>
+            <th style="width: 26%;">Starch-Rich Material</th>
+            <th style="width: 26%;">Cellulose-Rich Biomass</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Primary Carbohydrates</strong></td>
+            <td>Sucrose (45–55%), Glucose, Fructose</td>
+            <td>Starch: Amylose (25%) + Amylopectin (75%)</td>
+            <td>Cellulose (40%), Hemicellulose (25%), Lignin (20%)</td>
+          </tr>
+          <tr>
+            <td><strong>Glycosidic Linkage</strong></td>
+            <td>α-1,2 glycosidic linkage</td>
+            <td>α-1,4 linear & α-1,6 branched</td>
+            <td>β-1,4 glycosidic (crystalline microfibrils)</td>
+          </tr>
+          <tr>
+            <td><strong>Pretreatment Severity</strong></td>
+            <td><strong>None / Minimal:</strong> Dilution & clarification only</td>
+            <td><strong>Moderate:</strong> Milling, slurry formation, jet-cooking</td>
+            <td><strong>Extreme:</strong> Thermochemical dilute acid / steam explosion</td>
+          </tr>
+          <tr>
+            <td><strong>Enzyme Requirement</strong></td>
+            <td><strong>Zero:</strong> Cleaved by endogenous yeast invertase</td>
+            <td><strong>Moderate:</strong> External α-Amylase + Glucoamylase</td>
+            <td><strong>Very High:</strong> Multienzyme cellulase cocktail + β-glucosidase</td>
+          </tr>
+          <tr>
+            <td><strong>Enzyme Cost per L Fuel</strong></td>
+            <td>$0.00 / litre (Endogenous)</td>
+            <td>$0.02 – $0.04 / litre</td>
+            <td>$0.12 – $0.25 / litre (High cost penalty)</td>
+          </tr>
+          <tr>
+            <td><strong>Fermentation Inhibitors</strong></td>
+            <td>Negligible (Trace organic salts)</td>
+            <td>Low (Trace free fatty acids from germ)</td>
+            <td><strong>Severe:</strong> Furfural, 5-HMF, acetic acid, syringaldehyde</td>
+          </tr>
+          <tr>
+            <td><strong>Fermentation Microbe</strong></td>
+            <td>Standard <em>Saccharomyces cerevisiae</em></td>
+            <td>Standard <em>Saccharomyces cerevisiae</em></td>
+            <td>Genetically engineered pentose/hexose co-fermenting strains</td>
+          </tr>
+          <tr>
+            <td><strong>Fermentation Residence Time</strong></td>
+            <td><strong>Rapid:</strong> 24–36 hours</td>
+            <td><strong>Intermediate:</strong> 48–60 hours</td>
+            <td><strong>Slow:</strong> 72–96 hours (inhibited kinetics)</td>
+          </tr>
+          <tr>
+            <td><strong>Ethanol Yield / Tonne</strong></td>
+            <td>280 – 330 Litres / tonne molasses</td>
+            <td>380 – 420 Litres / tonne dry grain</td>
+            <td>160 – 240 Litres / tonne dry biomass</td>
+          </tr>
+          <tr>
+            <td><strong>Food vs Fuel Conflict</strong></td>
+            <td><strong>None:</strong> Utilises industrial byproduct waste</td>
+            <td><strong>High:</strong> Competes directly with food staples</td>
+            <td><strong>None:</strong> Non-food plant residue</td>
+          </tr>
+          <tr>
+            <td><strong>Capital Cost (CAPEX)</strong></td>
+            <td><strong>Lowest:</strong> Conventional fermenters only</td>
+            <td><strong>Moderate:</strong> Cooking + liquefaction boilers</td>
+            <td><strong>Extremely High:</strong> Corrosion-resistant reactors</td>
+          </tr>
+          <tr>
+            <td><strong>Technology Readiness</strong></td>
+            <td><strong>TRL 9:</strong> Mature global deployment</td>
+            <td><strong>TRL 9:</strong> Fully commercialized worldwide</td>
+            <td><strong>TRL 6–7:</strong> Pilot/Demonstration; High failure rate</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="table-caption">Table 1.1: Multi-parameter engineering comparison of bioethanol feedstocks across conversion, economic, and operational metrics.</div>
+    </div>
+  </div>
+
+  <div class="academic-footer">
+    <span>Department of Biotechnology and Chemical Engineering, MUJ</span>
+    <span>BIT 1001: Biology for Engineers — Assignment I</span>
+    <span>Page 4 of 12</span>
+  </div>
+</div>
+
+<!-- =================================================================== -->
+<!-- PAGE 5: QUESTION 1 - PROCESS FLOWSHEETS & FERMENTATION DYNAMICS     -->
+<!-- =================================================================== -->
+<div class="page" id="page-5">
+  <div>
+    <div class="academic-header">
+      <div class="inst-title">MANIPAL UNIVERSITY JAIPUR</div>
+      <div class="dept-title">Department of Biotechnology and Chemical Engineering</div>
+      <div class="course-title">Biology for Engineers (BIT 1001) — Assignment I</div>
+      <div class="meta-bar">
+        <span>Name: Sukarn Kumar</span>
+        <span>Reg. No.: 2602050874</span>
+        <span>Submission Date: 31-08-2026</span>
+      </div>
+    </div>
+
+    <div class="content-body">
+      <h2 class="sec-heading">1.5 Comparative Unit Operations & Process Flowsheet Analysis</h2>
+      <p>
+        The required unit operations for each feedstock differ drastically in complexity, energy footprint, and capital expenditure:
+      </p>
+
+      <div class="fig-container">
+        <svg width="670" height="215" viewBox="0 0 670 215">
+          <!-- Flowsheet 1: Sugar Waste -->
+          <g>
+            <rect x="5" y="8" width="105" height="38" rx="4" fill="#eaf2f8" stroke="#2980b9" stroke-width="1.2"/>
+            <text x="57" y="23" font-family="Times New Roman" font-size="9" font-weight="bold" fill="#1b4f72" text-anchor="middle">Sugar Waste</text>
+            <text x="57" y="35" font-family="Times New Roman" font-size="8" fill="#333" text-anchor="middle">(Molasses/Syrup)</text>
+
+            <line x1="110" y1="27" x2="140" y2="27" stroke="#2980b9" stroke-width="1.5"/>
+
+            <rect x="140" y="8" width="105" height="38" rx="4" fill="#eaf2f8" stroke="#2980b9" stroke-width="1.2"/>
+            <text x="192" y="23" font-family="Times New Roman" font-size="9" font-weight="bold" fill="#1b4f72" text-anchor="middle">Water Dilution</text>
+            <text x="192" y="35" font-family="Times New Roman" font-size="8" fill="#333" text-anchor="middle">Brix 18-22° + Acid</text>
+
+            <line x1="245" y1="27" x2="275" y2="27" stroke="#2980b9" stroke-width="1.5"/>
+
+            <rect x="275" y="8" width="125" height="38" rx="4" fill="#d5f5e3" stroke="#27ae60" stroke-width="1.5"/>
+            <text x="337" y="23" font-family="Times New Roman" font-size="9" font-weight="bold" fill="#145a32" text-anchor="middle">Fermentation</text>
+            <text x="337" y="35" font-family="Times New Roman" font-size="8" fill="#145a32" text-anchor="middle">Invertase + S. cerevisiae</text>
+
+            <line x1="400" y1="27" x2="430" y2="27" stroke="#27ae60" stroke-width="1.5"/>
+
+            <rect x="430" y="8" width="105" height="38" rx="4" fill="#eaf2f8" stroke="#2980b9" stroke-width="1.2"/>
+            <text x="482" y="23" font-family="Times New Roman" font-size="9" font-weight="bold" fill="#1b4f72" text-anchor="middle">Distillation</text>
+            <text x="482" y="35" font-family="Times New Roman" font-size="8" fill="#333" text-anchor="middle">Beer Well & Rectifier</text>
+
+            <line x1="535" y1="27" x2="565" y2="27" stroke="#2980b9" stroke-width="1.5"/>
+
+            <rect x="565" y="8" width="100" height="38" rx="4" fill="#2980b9" stroke="#154360" stroke-width="1.2"/>
+            <text x="615" y="23" font-family="Times New Roman" font-size="9" font-weight="bold" fill="#fff" text-anchor="middle">Bioethanol</text>
+            <text x="615" y="35" font-family="Times New Roman" font-size="8" fill="#eaf2f8" text-anchor="middle">99.6% Anhydrous</text>
+          </g>
+
+          <!-- Flowsheet 2: Starch Grain -->
+          <g transform="translate(0, 68)">
+            <rect x="5" y="8" width="85" height="38" rx="4" fill="#fef9e7" stroke="#f39c12" stroke-width="1.2"/>
+            <text x="47" y="23" font-family="Times New Roman" font-size="8.5" font-weight="bold" fill="#7d6608" text-anchor="middle">Grain Starch</text>
+            <text x="47" y="35" font-family="Times New Roman" font-size="7.5" fill="#333" text-anchor="middle">(Corn / Cassava)</text>
+
+            <line x1="90" y1="27" x2="115" y2="27" stroke="#f39c12" stroke-width="1.5"/>
+
+            <rect x="115" y="8" width="95" height="38" rx="4" fill="#fef9e7" stroke="#f39c12" stroke-width="1.2"/>
+            <text x="162" y="23" font-family="Times New Roman" font-size="8.5" font-weight="bold" fill="#7d6608" text-anchor="middle">Milling & Slurry</text>
+            <text x="162" y="35" font-family="Times New Roman" font-size="7.5" fill="#333" text-anchor="middle">Hammer Mill + Water</text>
+
+            <line x1="210" y1="27" x2="235" y2="27" stroke="#f39c12" stroke-width="1.5"/>
+
+            <rect x="235" y="8" width="105" height="38" rx="4" fill="#fcf3cf" stroke="#d68910" stroke-width="1.2"/>
+            <text x="287" y="23" font-family="Times New Roman" font-size="8.5" font-weight="bold" fill="#7d6608" text-anchor="middle">Liquefaction</text>
+            <text x="287" y="35" font-family="Times New Roman" font-size="7.5" fill="#333" text-anchor="middle">95°C + α-Amylase</text>
+
+            <line x1="340" y1="27" x2="365" y2="27" stroke="#f39c12" stroke-width="1.5"/>
+
+            <rect x="365" y="8" width="105" height="38" rx="4" fill="#fcf3cf" stroke="#d68910" stroke-width="1.2"/>
+            <text x="417" y="23" font-family="Times New Roman" font-size="8.5" font-weight="bold" fill="#7d6608" text-anchor="middle">Saccharification</text>
+            <text x="417" y="35" font-family="Times New Roman" font-size="7.5" fill="#333" text-anchor="middle">60°C + Glucoamylase</text>
+
+            <line x1="470" y1="27" x2="495" y2="27" stroke="#f39c12" stroke-width="1.5"/>
+
+            <rect x="495" y="8" width="85" height="38" rx="4" fill="#d5f5e3" stroke="#27ae60" stroke-width="1.2"/>
+            <text x="537" y="23" font-family="Times New Roman" font-size="8.5" font-weight="bold" fill="#145a32" text-anchor="middle">Fermentation</text>
+            <text x="537" y="35" font-family="Times New Roman" font-size="7.5" fill="#145a32" text-anchor="middle">S. cerevisiae</text>
+
+            <line x1="580" y1="27" x2="600" y2="27" stroke="#27ae60" stroke-width="1.5"/>
+
+            <rect x="600" y="8" width="65" height="38" rx="4" fill="#2980b9" stroke="#154360" stroke-width="1.2"/>
+            <text x="632" y="23" font-family="Times New Roman" font-size="8.5" font-weight="bold" fill="#fff" text-anchor="middle">Bioethanol</text>
+            <text x="632" y="35" font-family="Times New Roman" font-size="7.5" fill="#fff" text-anchor="middle">Purified</text>
+          </g>
+
+          <!-- Flowsheet 3: Lignocellulose -->
+          <g transform="translate(0, 136)">
+            <rect x="5" y="8" width="80" height="38" rx="4" fill="#fadbd8" stroke="#c0392b" stroke-width="1.2"/>
+            <text x="45" y="23" font-family="Times New Roman" font-size="8" font-weight="bold" fill="#78281f" text-anchor="middle">Lignocellulose</text>
+            <text x="45" y="35" font-family="Times New Roman" font-size="7" fill="#333" text-anchor="middle">Straw / Bagasse</text>
+
+            <line x1="85" y1="27" x2="105" y2="27" stroke="#c0392b" stroke-width="1.5"/>
+
+            <rect x="105" y="8" width="95" height="38" rx="4" fill="#fadbd8" stroke="#c0392b" stroke-width="1.2"/>
+            <text x="152" y="23" font-family="Times New Roman" font-size="8" font-weight="bold" fill="#78281f" text-anchor="middle">Physical Milling</text>
+            <text x="152" y="35" font-family="Times New Roman" font-size="7" fill="#333" text-anchor="middle">Chipping to &lt;2mm</text>
+
+            <line x1="200" y1="27" x2="220" y2="27" stroke="#c0392b" stroke-width="1.5"/>
+
+            <rect x="220" y="8" width="105" height="38" rx="4" fill="#f5b7b1" stroke="#922b21" stroke-width="1.5"/>
+            <text x="272" y="21" font-family="Times New Roman" font-size="8" font-weight="bold" fill="#78281f" text-anchor="middle">Steam Explosion</text>
+            <text x="272" y="32" font-family="Times New Roman" font-size="7" fill="#333" text-anchor="middle">180-220°C, 2% H2SO4</text>
+            <text x="272" y="42" font-family="Times New Roman" font-size="6.5" fill="#922b21" text-anchor="middle">(Generates Furfurals)</text>
+
+            <line x1="325" y1="27" x2="345" y2="27" stroke="#c0392b" stroke-width="1.5"/>
+
+            <rect x="345" y="8" width="95" height="38" rx="4" fill="#fadbd8" stroke="#c0392b" stroke-width="1.2"/>
+            <text x="392" y="23" font-family="Times New Roman" font-size="8" font-weight="bold" fill="#78281f" text-anchor="middle">Detoxification</text>
+            <text x="392" y="35" font-family="Times New Roman" font-size="7" fill="#333" text-anchor="middle">Overliming (Ca(OH)2)</text>
+
+            <line x1="440" y1="27" x2="460" y2="27" stroke="#c0392b" stroke-width="1.5"/>
+
+            <rect x="460" y="8" width="95" height="38" rx="4" fill="#fcf3cf" stroke="#d68910" stroke-width="1.2"/>
+            <text x="507" y="21" font-family="Times New Roman" font-size="8" font-weight="bold" fill="#7d6608" text-anchor="middle">Enzyme Cocktail</text>
+            <text x="507" y="32" font-family="Times New Roman" font-size="7" fill="#333" text-anchor="middle">Cellulase + Xylanase</text>
+            <text x="507" y="42" font-family="Times New Roman" font-size="6.5" fill="#b9770e" text-anchor="middle">High Cost ($0.20/L)</text>
+
+            <line x1="555" y1="27" x2="575" y2="27" stroke="#f39c12" stroke-width="1.5"/>
+
+            <rect x="575" y="8" width="90" height="38" rx="4" fill="#d5f5e3" stroke="#27ae60" stroke-width="1.2"/>
+            <text x="620" y="21" font-family="Times New Roman" font-size="8" font-weight="bold" fill="#145a32" text-anchor="middle">Co-Fermentation</text>
+            <text x="620" y="32" font-family="Times New Roman" font-size="7" fill="#145a32" text-anchor="middle">Engineered C5/C6</text>
+            <text x="620" y="42" font-family="Times New Roman" font-size="6.5" fill="#145a32" text-anchor="middle">Slow (72-96h)</text>
+          </g>
+        </svg>
+        <div class="fig-caption">Figure 1.3: Comparative engineering unit operations and process flowsheets for bioethanol production across feedstocks.</div>
+      </div>
+
+      <h2 class="sec-heading">1.6 Fermentation Stoichiometry and Metabolic Kinetics</h2>
+      <p>
+        The bio-catalytic conversion of monomeric hexose sugar into ethanol follows the classical Gay-Lussac stoichiometric equation:
+      </p>
+      <div style="text-align: center; font-weight: bold; margin: 3px 0; font-size: 11pt;">
+        C<sub>6</sub>H<sub>12</sub>O<sub>6</sub> &nbsp;&longrightarrow;&nbsp; 2 C<sub>2</sub>H<sub>5</sub>OH + 2 CO<sub>2</sub> + 2 ATP &emsp; (&Delta;G&deg;' = &minus;218 kJ/mol)
+      </div>
+      <p>
+        From molecular weight ratios (180.16 g/mol glucose yielding 2 &times; 46.07 g/mol ethanol), the maximum theoretical yield coefficient is <strong>0.511 g ethanol per gram glucose</strong> (100% Gay-Lussac maximum). In industrial practice, yeast biomass synthesis and trace glycerol production divert ~5–8% of carbon, making 0.46–0.48 g/g (~90–94% theoretical) typical in sugar-rich waste.
+      </p>
+      <p>
+        In contrast, lignocellulosic hydrolysates contain pentose sugars (D-xylose, L-arabinose) from hemicellulose that wild-type yeast cannot naturally metabolize, requiring recombinant metabolic pathways (xylose isomerase or xylose reductase/xylitol dehydrogenase) which suffer from severe cofactor imbalances (NADH/NADPH) and by-product xylitol accumulation. Moreover, degradation inhibitors (furfural, hydroxymethylfurfural, acetic acid, vanillin) severely retard cell division and suppress alcohol dehydrogenase (ADH) activity, capping conversion efficiencies at 60–75%.
+      </p>
+    </div>
+  </div>
+
+  <div class="academic-footer">
+    <span>Department of Biotechnology and Chemical Engineering, MUJ</span>
+    <span>BIT 1001: Biology for Engineers — Assignment I</span>
+    <span>Page 5 of 12</span>
+  </div>
+</div>
+
+<!-- =================================================================== -->
+<!-- PAGE 6: QUESTION 1 - RECOMMENDATION & COMPREHENSIVE JUSTIFICATION   -->
+<!-- =================================================================== -->
+<div class="page" id="page-6">
+  <div>
+    <div class="academic-header">
+      <div class="inst-title">MANIPAL UNIVERSITY JAIPUR</div>
+      <div class="dept-title">Department of Biotechnology and Chemical Engineering</div>
+      <div class="course-title">Biology for Engineers (BIT 1001) — Assignment I</div>
+      <div class="meta-bar">
+        <span>Name: Sukarn Kumar</span>
+        <span>Reg. No.: 2602050874</span>
+        <span>Submission Date: 31-08-2026</span>
+      </div>
+    </div>
+
+    <div class="content-body">
+      <h2 class="sec-heading">1.7 Engineering Recommendation & Strategic Selection</h2>
+      <div class="callout-box">
+        <strong>FINAL ENGINEERING RECOMMENDATION:</strong><br>
+        Based upon a comprehensive multi-criteria evaluation of <em>ease of carbohydrate conversion</em>, <em>thermodynamic reaction kinetics</em>, <em>capital intensity (CAPEX)</em>, <em>operating enzyme economics (OPEX)</em>, and <em>immediate industrial readiness (TRL 9)</em>, this biofuel company is unequivocally advised to select <strong>SUGAR-RICH WASTE (specifically sugarcane molasses or agro-industrial sugar syrup wastes)</strong> as its primary commercial feedstock.
+      </div>
+
+      <h2 class="sec-heading">1.8 Comprehensive Multi-Pillar Justification</h2>
+      <p>
+        The selection of sugar-rich waste over starch-rich crops and lignocellulosic biomass is justified across five critical engineering, biochemical, and commercial pillars:
+      </p>
+
+      <ol>
+        <li>
+          <strong>Elimination of Pretreatment & Hydrolysis Infrastructure (Minimum CAPEX):</strong> Sugar-rich waste contains directly fermentable sucrose, glucose, and fructose. It requires zero size-reduction milling, zero high-temperature jet cooking, zero corrosive acid-handling metallurgy, and zero pressure vessels. The capital equipment is limited to simple dilution tanks, sterile air spargers, and standard 304-stainless steel fermenters.
+        </li>
+        <li>
+          <strong>Zero External Enzyme Procurement Cost (OPEX Optimization):</strong> Because <em>S. cerevisiae</em> naturally produces invertase (EC 3.2.1.26) on its cell surface, sucrose is hydrolysed in situ at ambient fermentation temperature (30–32°C). Unlike starch systems (which require constant purchasing of α-amylase and glucoamylase at ~$0.03/L) and lignocellulosic facilities (which require massive enzyme doses costing $0.15–$0.25/L), sugar-waste systems incur <em>zero enzyme cost</em>.
+        </li>
+        <li>
+          <strong>Superior Volumetric Productivity and Residence Time:</strong> Sugar-waste fermentation operates at high substrate concentrations (18–22° Brix) with rapid completion times of 24–36 hours and volumetric productivity of 2.5–3.8 g ethanol/(L·h). Starch grain plants require 48–60 hours, while lignocellulosic plants require 72–96 hours due to catabolite repression and inhibitor stress. Shorter cycle times translate directly into higher annual throughput per unit bioreactor volume.
+        </li>
+        <li>
+          <strong>Clean Fermentation Environment (Zero Microbial Inhibitors):</strong> In stark contrast to lignocellulose hydrolysates—which are contaminated with cell-killing furans, aliphatic acids, and phenolics—sugar-rich waste presents no growth-arresting heterocyclic byproducts, enabling robust cell recycling (e.g., the Melle-Boinot process) where up to 90% of yeast biomass is centrifuged and reused across consecutive batches.
+        </li>
+        <li>
+          <strong>Avoidance of the Ethical "Food-vs-Fuel" Trilemma:</strong> Starch-rich grains (corn, wheat) face escalating regulatory scrutiny and public backlash for diverting essential human and animal food resources into fuel tanks, causing agricultural price inflation. Sugar waste valorizes an otherwise polluting industrial byproduct stream with negative or nominal acquisition cost, creating a circular bioeconomy model.
+        </li>
+      </ol>
+
+      <div class="fig-container">
+        <svg width="670" height="90" viewBox="0 0 670 90">
+          <rect x="5" y="8" width="660" height="74" rx="6" fill="#f8f9fa" stroke="#aeb6bf" stroke-width="1.2"/>
+          <text x="335" y="24" font-family="Times New Roman" font-size="10" font-weight="bold" fill="#1b4f72" text-anchor="middle">Comparative Multi-Dimensional Performance Scorecard (Scale: 1 = Lowest, 5 = Superior)</text>
+
+          <text x="25" y="42" font-family="Times New Roman" font-size="9" font-weight="bold" fill="#333">Feedstock</text>
+          <text x="140" y="42" font-family="Times New Roman" font-size="8.5" font-weight="bold" fill="#1b4f72" text-anchor="middle">Conversion Ease</text>
+          <text x="240" y="42" font-family="Times New Roman" font-size="8.5" font-weight="bold" fill="#1b4f72" text-anchor="middle">Enzyme Economy</text>
+          <text x="340" y="42" font-family="Times New Roman" font-size="8.5" font-weight="bold" fill="#1b4f72" text-anchor="middle">CAPEX Efficiency</text>
+          <text x="440" y="42" font-family="Times New Roman" font-size="8.5" font-weight="bold" fill="#1b4f72" text-anchor="middle">Process Speed</text>
+          <text x="540" y="42" font-family="Times New Roman" font-size="8.5" font-weight="bold" fill="#1b4f72" text-anchor="middle">Food-Ethics Safety</text>
+          <text x="630" y="42" font-family="Times New Roman" font-size="9" font-weight="bold" fill="#27ae60" text-anchor="middle">Overall</text>
+
+          <line x1="15" y1="46" x2="655" y2="46" stroke="#bdc3c7" stroke-width="1"/>
+
+          <text x="25" y="60" font-family="Times New Roman" font-size="8.5" font-weight="bold" fill="#154360">Sugar-Rich Waste</text>
+          <text x="140" y="60" font-family="Times New Roman" font-size="8.5" fill="#154360" text-anchor="middle">★★★★★ (5/5)</text>
+          <text x="240" y="60" font-family="Times New Roman" font-size="8.5" fill="#154360" text-anchor="middle">★★★★★ (5/5)</text>
+          <text x="340" y="60" font-family="Times New Roman" font-size="8.5" fill="#154360" text-anchor="middle">★★★★★ (5/5)</text>
+          <text x="440" y="60" font-family="Times New Roman" font-size="8.5" fill="#154360" text-anchor="middle">★★★★★ (5/5)</text>
+          <text x="540" y="60" font-family="Times New Roman" font-size="8.5" fill="#154360" text-anchor="middle">★★★★★ (5/5)</text>
+          <text x="630" y="60" font-family="Times New Roman" font-size="9" font-weight="bold" fill="#27ae60" text-anchor="middle">25 / 25</text>
+
+          <text x="25" y="74" font-family="Times New Roman" font-size="8.5" fill="#7d6608">Starch Materials</text>
+          <text x="140" y="74" font-family="Times New Roman" font-size="8.5" fill="#7d6608" text-anchor="middle">★★★☆☆ (3/5)</text>
+          <text x="240" y="74" font-family="Times New Roman" font-size="8.5" fill="#7d6608" text-anchor="middle">★★★☆☆ (3/5)</text>
+          <text x="340" y="74" font-family="Times New Roman" font-size="8.5" fill="#7d6608" text-anchor="middle">★★★☆☆ (3/5)</text>
+          <text x="440" y="74" font-family="Times New Roman" font-size="8.5" fill="#7d6608" text-anchor="middle">★★★★☆ (4/5)</text>
+          <text x="540" y="74" font-family="Times New Roman" font-size="8.5" fill="#7d6608" text-anchor="middle">★☆☆☆☆ (1/5)</text>
+          <text x="630" y="74" font-family="Times New Roman" font-size="8.5" font-weight="bold" fill="#7d6608" text-anchor="middle">14 / 25</text>
+        </svg>
+        <div class="fig-caption">Figure 1.4: Multi-attribute decision analysis scorecard validating the definitive selection of sugar-rich waste.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="academic-footer">
+    <span>Department of Biotechnology and Chemical Engineering, MUJ</span>
+    <span>BIT 1001: Biology for Engineers — Assignment I</span>
+    <span>Page 6 of 12</span>
+  </div>
+</div>
+
+<!-- =================================================================== -->
+<!-- PAGE 7: QUESTION 2 - ENZYMES IN MODERN DETERGENTS                   -->
+<!-- =================================================================== -->
+<div class="page" id="page-7">
+  <div>
+    <div class="academic-header">
+      <div class="inst-title">MANIPAL UNIVERSITY JAIPUR</div>
+      <div class="dept-title">Department of Biotechnology and Chemical Engineering</div>
+      <div class="course-title">Biology for Engineers (BIT 1001) — Assignment I</div>
+      <div class="meta-bar">
+        <span>Name: Sukarn Kumar</span>
+        <span>Reg. No.: 2602050874</span>
+        <span>Submission Date: 31-08-2026</span>
+      </div>
+    </div>
+
+    <div class="question-box">
+      <span class="marks-badge">10 Marks</span>
+      <b>Q2. Enzymes are added to many modern detergents. Explain the role of protein-based enzymes in detergents and discuss how their properties help improve cleaning efficiency.</b>
+    </div>
+
+    <div class="content-body">
+      <h2 class="sec-heading">2.1 Historical Evolution & Paradigm Shift to Biological Detergents</h2>
+      <p>
+        The introduction of biological catalysts into domestic and industrial laundry formulations represents one of the greatest commercial successes of industrial biotechnology. Historically, laundering relied on caustic builders (sodium carbonate, silicates), phosphates (STPP), and synthetic surfactants at high wash temperatures (60°C to 90°C) to mechanically emulsify soils. However, this heavy-chemical approach degraded delicate textile fibers, faded garment dyes, consumed massive household electrical energy, and caused severe environmental eutrophication of water bodies via phosphate runoff.
+      </p>
+      <p>
+        The biological detergent revolution began in 1913 when German chemist Otto Röhm patented pancreatic enzymes (crude trypsin, <em>Burnus</em>) for laundry soaking. The commercial breakthrough occurred in the mid-1960s when Novo Industri (now Novozymes) launched the alkaliphilic bacterial serine protease <strong>Alcalase</strong> (from <em>Bacillus licheniformis</em>). Today, biological detergents represent over 80% of laundry products in major global markets.
+      </p>
+
+      <h2 class="sec-heading">2.2 Physics & Chemistry of Soil Removal: Surfactants vs Enzymes</h2>
+      <p>
+        To understand the indispensable role of enzymes, one must evaluate interfacial soil removal mechanisms:
+      </p>
+      <ul>
+        <li><strong>Surfactants (Surface Active Agents):</strong> Linear alkylbenzene sulfonates (LAS) and alcohol ethoxylates (AE) are amphiphilic molecules that lower water surface tension and emulsify fluid oils into micellar structures. However, chemical surfactants can only remove soils that are already dissolved or loosely adhering.</li>
+        <li><strong>The Inherent Barrier of Complex Macromolecular Soils:</strong> Common household stains consist of water-insoluble, cross-linked biological macromolecules: coagulated proteins (blood, egg, perspiration), gelatinized starch pastes (gravy, pasta), triglycerides (cooking oil, sebum), and plant gums. Surfactants cannot cleave covalent bonds within these biopolymers. When exposed to hot wash water, proteins denature and cross-link into cotton microfibrils, permanently locking particulate soot into the textile.</li>
+        <li><strong>The Catalytic Role of Enzymes as "Molecular Scissors":</strong> Enzymes act as catalytic biocatalysts that accelerate hydrolytic covalent bond cleavage. By cleaving large, hydrophobic biopolymer networks into short, water-soluble oligomers and monomers, enzymes transform insoluble stains into easily dispersible fragments that wash away at low temperatures (20–30°C).</li>
+      </ul>
+
+      <div class="fig-container">
+        <svg width="670" height="85" viewBox="0 0 670 85">
+          <rect x="5" y="8" width="315" height="68" rx="6" fill="#fadbd8" stroke="#c0392b" stroke-width="1.2"/>
+          <text x="162" y="25" font-family="Times New Roman" font-size="10.5" font-weight="bold" fill="#78281f" text-anchor="middle">Non-Biological Chemical Washing</text>
+          <text x="162" y="40" font-family="Times New Roman" font-size="9" fill="#333" text-anchor="middle">High Wash Temp Required (60°C - 90°C)</text>
+          <text x="162" y="53" font-family="Times New Roman" font-size="9" fill="#333" text-anchor="middle">Proteins coagulate & "bake" into cotton yarn</text>
+          <text x="162" y="66" font-family="Times New Roman" font-size="9" font-weight="bold" fill="#c0392b" text-anchor="middle">High energy, fiber damage, grey film</text>
+
+          <rect x="350" y="8" width="315" height="68" rx="6" fill="#d5f5e3" stroke="#27ae60" stroke-width="1.2"/>
+          <text x="507" y="25" font-family="Times New Roman" font-size="10.5" font-weight="bold" fill="#145a32" text-anchor="middle">Modern Biological Washing (Enzymes)</text>
+          <text x="507" y="40" font-family="Times New Roman" font-size="9" fill="#333" text-anchor="middle">Cold-Water Wash Active (20°C - 30°C)</text>
+          <text x="507" y="53" font-family="Times New Roman" font-size="9" fill="#333" text-anchor="middle">Specific catalytic cleavage of covalent bonds</text>
+          <text x="507" y="66" font-family="Times New Roman" font-size="9" font-weight="bold" fill="#145a32" text-anchor="middle">Saves 60% energy, gentle on fibers & dyes</text>
+        </svg>
+        <div class="fig-caption">Figure 2.1: Fundamental operational contrast between harsh chemical detergency and enzymatic biological washing.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="academic-footer">
+    <span>Department of Biotechnology and Chemical Engineering, MUJ</span>
+    <span>BIT 1001: Biology for Engineers — Assignment I</span>
+    <span>Page 7 of 12</span>
+  </div>
+</div>
+
+<!-- =================================================================== -->
+<!-- PAGE 8: QUESTION 2 - ENZYME CLASSES & SUBSTRATE SPECIFICITY         -->
+<!-- =================================================================== -->
+<div class="page" id="page-8">
+  <div>
+    <div class="academic-header">
+      <div class="inst-title">MANIPAL UNIVERSITY JAIPUR</div>
+      <div class="dept-title">Department of Biotechnology and Chemical Engineering</div>
+      <div class="course-title">Biology for Engineers (BIT 1001) — Assignment I</div>
+      <div class="meta-bar">
+        <span>Name: Sukarn Kumar</span>
+        <span>Reg. No.: 2602050874</span>
+        <span>Submission Date: 31-08-2026</span>
+      </div>
+    </div>
+
+    <div class="content-body">
+      <h2 class="sec-heading">2.3 Comprehensive Classification of Modern Detergent Enzyme Classes</h2>
+      <p>
+        Contemporary premium detergents incorporate multi-enzyme cocktails engineered to target diverse biochemical macromolecules in everyday consumer stains. The four primary enzyme classes include:
+      </p>
+
+      <h3 class="sub-heading">2.3.1 Proteases (EC 3.4.21 - Serine Endopeptidases)</h3>
+      <p>
+        Proteases comprise over 60% of all detergent enzyme sales. Belonging predominantly to the <strong>subtilisin</strong> family of alkaline serine endopeptidases (from <em>Bacillus</em> species such as <em>B. licheniformis</em> and <em>B. clausii</em>), they hydrolyse internal peptide (-CO-NH-) bonds within proteinaceous soils: blood (haemoglobin), egg yolk/white (albumen), grass (RuBisCO), dairy (casein), and perspiration/skin flakes (keratin). Hydrolysis into soluble peptides releases trapped dirt particles. Leading commercial brands include <em>Savinase</em>, <em>Alcalase</em>, and <em>Everlase</em>.
+      </p>
+
+      <h3 class="sub-heading">2.3.2 Lipases (EC 3.1.1.3 - Triacylglycerol Hydrolases)</h3>
+      <p>
+        Lipases hydrolyse water-insoluble triglycerides into diglycerides, monoglycerides, free fatty acids, and glycerol. Stains targeted include cooking oils, butter, cosmetics (lipstick), and human sebum. Lipases exhibit unique <em>interfacial activation</em>: an oligopeptide "lid" covers the active site in bulk water, undergoing a conformational hinge shift at hydrophobic oil-water interfaces to expose the catalytic pocket. Modern engineered lipases (e.g., <em>Lipex</em>) provide outstanding grease removal even in 20°C cold washes.
+      </p>
+
+      <h3 class="sub-heading">2.3.3 Amylases (EC 3.2.1.1 - α-Amylases)</h3>
+      <p>
+        Amylases hydrolyse internal α-(1→4)-D-glucosidic bonds in amylose and amylopectin starch polymers. Starch is globally ubiquitous as a food thickener (sauces, gravies, chocolate, pasta) and functions as an adhesive glue anchoring dust and soot to cotton threads. Detergent α-amylases (e.g., <em>Termamyl</em>, <em>Stainzyme</em>) rapidly digest gelatinized starch pastes into soluble maltodextrins, instantly dispersing adhered soils.
+      </p>
+
+      <h3 class="sub-heading">2.3.4 Cellulases (EC 3.2.1.4 - Endo-β-1,4-Glucanases)</h3>
+      <p>
+        Unlike other enzymes, <strong>cellulases target the cotton fabric itself rather than stains</strong>. Repeated washing creates damaged microfibrils and fuzz balls ("pills") on cotton fibers, which trap particulate soot and scatter light, causing garments to appear dull, grey, and rough. Engineered alkaline cellulases (e.g., <em>Carezyme</em>) selectively shave off protruding amorphous microfibrils while sparing the crystalline core of the yarn, restoring color vibrancy, brightening whites, and imparting softness.
+      </p>
+
+      <div class="fig-container">
+        <svg width="670" height="85" viewBox="0 0 670 85">
+          <g transform="translate(10, 5)">
+            <rect x="0" y="5" width="150" height="68" rx="5" fill="#eaf2f8" stroke="#2980b9" stroke-width="1.2"/>
+            <text x="75" y="22" font-family="Times New Roman" font-size="10" font-weight="bold" fill="#1b4f72" text-anchor="middle">PROTEASE</text>
+            <text x="75" y="37" font-family="Times New Roman" font-size="8.5" fill="#333" text-anchor="middle">Cleaves: Peptide bonds</text>
+            <text x="75" y="50" font-family="Times New Roman" font-size="8.5" fill="#333" text-anchor="middle">Stains: Blood, egg, sweat</text>
+            <text x="75" y="63" font-family="Times New Roman" font-size="8" font-weight="bold" fill="#2980b9" text-anchor="middle">Savinase, Everlase</text>
+          </g>
+
+          <g transform="translate(175, 5)">
+            <rect x="0" y="5" width="150" height="68" rx="5" fill="#fef9e7" stroke="#f1c40f" stroke-width="1.2"/>
+            <text x="75" y="22" font-family="Times New Roman" font-size="10" font-weight="bold" fill="#7d6608" text-anchor="middle">LIPASE</text>
+            <text x="75" y="37" font-family="Times New Roman" font-size="8.5" fill="#333" text-anchor="middle">Cleaves: Ester bonds</text>
+            <text x="75" y="50" font-family="Times New Roman" font-size="8.5" fill="#333" text-anchor="middle">Stains: Grease, oil, sebum</text>
+            <text x="75" y="63" font-family="Times New Roman" font-size="8" font-weight="bold" fill="#b7950b" text-anchor="middle">Lipolase, Lipex</text>
+          </g>
+
+          <g transform="translate(340, 5)">
+            <rect x="0" y="5" width="150" height="68" rx="5" fill="#e8f8f5" stroke="#16a085" stroke-width="1.2"/>
+            <text x="75" y="22" font-family="Times New Roman" font-size="10" font-weight="bold" fill="#0e6251" text-anchor="middle">AMYLASE</text>
+            <text x="75" y="37" font-family="Times New Roman" font-size="8.5" fill="#333" text-anchor="middle">Cleaves: α-1,4 Glucans</text>
+            <text x="75" y="50" font-family="Times New Roman" font-size="8.5" fill="#333" text-anchor="middle">Stains: Sauces, pasta, rice</text>
+            <text x="75" y="63" font-family="Times New Roman" font-size="8" font-weight="bold" fill="#16a085" text-anchor="middle">Termamyl, Stainzyme</text>
+          </g>
+
+          <g transform="translate(505, 5)">
+            <rect x="0" y="5" width="150" height="68" rx="5" fill="#fadbd8" stroke="#c0392b" stroke-width="1.2"/>
+            <text x="75" y="22" font-family="Times New Roman" font-size="10" font-weight="bold" fill="#78281f" text-anchor="middle">CELLULASE</text>
+            <text x="75" y="37" font-family="Times New Roman" font-size="8.5" fill="#333" text-anchor="middle">Cleaves: Cotton microfibrils</text>
+            <text x="75" y="50" font-family="Times New Roman" font-size="8.5" fill="#333" text-anchor="middle">Action: Depills & softens</text>
+            <text x="75" y="63" font-family="Times New Roman" font-size="8" font-weight="bold" fill="#c0392b" text-anchor="middle">Carezyme, Celluzyme</text>
+          </g>
+        </svg>
+        <div class="fig-caption">Figure 2.2: Primary classes of detergent enzymes, their targeted covalent bonds, and commercial products.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="academic-footer">
+    <span>Department of Biotechnology and Chemical Engineering, MUJ</span>
+    <span>BIT 1001: Biology for Engineers — Assignment I</span>
+    <span>Page 8 of 12</span>
+  </div>
+</div>
+
+<!-- =================================================================== -->
+<!-- PAGE 9: QUESTION 2 - MULTI-ENZYME COMPARATIVE MATRIX & SYNERGY     -->
+<!-- =================================================================== -->
+<div class="page" id="page-9">
+  <div>
+    <div class="academic-header">
+      <div class="inst-title">MANIPAL UNIVERSITY JAIPUR</div>
+      <div class="dept-title">Department of Biotechnology and Chemical Engineering</div>
+      <div class="course-title">Biology for Engineers (BIT 1001) — Assignment I</div>
+      <div class="meta-bar">
+        <span>Name: Sukarn Kumar</span>
+        <span>Reg. No.: 2602050874</span>
+        <span>Submission Date: 31-08-2026</span>
+      </div>
+    </div>
+
+    <div class="content-body">
+      <h3 class="sub-heading">2.3.5 Emerging Specialist Enzyme Classes: Mannanases and Pectinases</h3>
+      <p>
+        Modern ultra-concentrated liquid detergents increasingly incorporate specialized secondary enzymes:
+      </p>
+      <ul>
+        <li><strong>Mannanases (EC 3.2.1.78):</strong> Target galactomannan gums (guar gum, locust bean gum) widely formulated into ice cream, salad dressings, and cosmetics. Mannanases (e.g., <em>Mannaway</em>) cleave the β-1,4 mannan backbone, releasing adhered pigments.</li>
+        <li><strong>Pectate Lyases (EC 4.2.2.2):</strong> Catalyse eliminative cleavage of α-(1→4) galacturonan linkages in fruit pectins (jams, berry juices, ketchup, wine). Commercial pectate lyases (e.g., <em>XPect</em>) operate without calcium chelator interference.</li>
+      </ul>
+
+      <h2 class="sec-heading">2.4 Multi-Enzyme Engineering Comparison Matrix</h2>
+      <p>
+        Table 2.1 delineates the operational parameters, substrates, and commercial trademarks of industrial detergent enzymes:
+      </p>
+
+      <table class="academic-table">
+        <thead>
+          <tr>
+            <th style="width: 14%;">Enzyme Class</th>
+            <th style="width: 10%;">EC Code</th>
+            <th style="width: 20%;">Target Substrate</th>
+            <th style="width: 18%;">Chemical Bond Cleaved</th>
+            <th style="width: 12%;">Optimum pH</th>
+            <th style="width: 12%;">Optimum Temp</th>
+            <th style="width: 14%;">Commercial Brands</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Protease</strong></td>
+            <td>3.4.21.62</td>
+            <td>Blood, egg, meat gravy, grass, perspiration</td>
+            <td>Internal peptide bonds (-CO-NH-)</td>
+            <td>pH 8.5 – 11.0</td>
+            <td>30°C – 60°C</td>
+            <td>Savinase, Alcalase, Everlase</td>
+          </tr>
+          <tr>
+            <td><strong>Lipase</strong></td>
+            <td>3.1.1.3</td>
+            <td>Butter, vegetable oil, cosmetics, sebum</td>
+            <td>Ester bonds in triglycerides</td>
+            <td>pH 8.0 – 10.0</td>
+            <td>20°C – 50°C</td>
+            <td>Lipolase, Lipex, LipoPrime</td>
+          </tr>
+          <tr>
+            <td><strong>Amylase</strong></td>
+            <td>3.2.1.1</td>
+            <td>Starch, puddings, pasta sauces, chocolate</td>
+            <td>α-(1→4) glucosidic bonds</td>
+            <td>pH 7.5 – 10.5</td>
+            <td>30°C – 65°C</td>
+            <td>Termamyl, Stainzyme, Amplify</td>
+          </tr>
+          <tr>
+            <td><strong>Cellulase</strong></td>
+            <td>3.2.1.4</td>
+            <td>Damaged cotton surface microfibrils</td>
+            <td>β-(1→4) glucosidic bonds in cellulose</td>
+            <td>pH 6.5 – 9.5</td>
+            <td>30°C – 50°C</td>
+            <td>Carezyme, Celluzyme, Endolase</td>
+          </tr>
+          <tr>
+            <td><strong>Mannanase</strong></td>
+            <td>3.2.1.78</td>
+            <td>Guar gum, locust bean gum (ice cream, sauce)</td>
+            <td>β-(1→4) mannosidic linkages</td>
+            <td>pH 7.0 – 9.5</td>
+            <td>25°C – 55°C</td>
+            <td>Mannaway, Purabrite</td>
+          </tr>
+          <tr>
+            <td><strong>Pectate Lyase</strong></td>
+            <td>4.2.2.2</td>
+            <td>Fruit jams, berries, ketchup, tomato paste</td>
+            <td>α-(1→4) galacturonan linkages</td>
+            <td>pH 8.0 – 10.0</td>
+            <td>30°C – 50°C</td>
+            <td>XPect, PrimaGreen</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="table-caption">Table 2.1: Comprehensive biochemical and operational matrix of industrial detergent enzymes.</div>
+
+      <h2 class="sec-heading">2.5 Multi-Enzyme Synergy in Complex Soil Breakdown</h2>
+      <p>
+        In everyday laundry, real-world stains are complex composite mixtures rather than isolated chemicals. A spaghetti Bolognese stain combines olive oil (triglycerides), minced meat (dense protein fibers), tomato paste (pectic carbohydrates), and pasta (gelatinized starch). A conventional detergent or single-enzyme wash fails because the lipid layer shields proteins, while starch paste cements pigments into cotton threads.
+      </p>
+      <p>
+        In a modern multi-enzyme detergent, an orchestrated catalytic cascade unfolds simultaneously: <em>Lipase</em> hydrolyses outer surface triglycerides, exposing the underlying protein network; <em>Protease</em> cleaves structural proteins; <em>Amylase</em> dissolves the starch matrix; and <em>Pectate lyase</em> liquefies plant polymers. The composite stain collapses into soluble micro-fragments that dissolve effortlessly at 25°C.
+      </p>
+    </div>
+  </div>
+
+  <div class="academic-footer">
+    <span>Department of Biotechnology and Chemical Engineering, MUJ</span>
+    <span>BIT 1001: Biology for Engineers — Assignment I</span>
+    <span>Page 9 of 12</span>
+  </div>
+</div>
+
+<!-- =================================================================== -->
+<!-- PAGE 10: QUESTION 2 - CATALYTIC MECHANISMS & STRUCTURAL ENZYMOLOGY  -->
+<!-- =================================================================== -->
+<div class="page" id="page-10">
+  <div>
+    <div class="academic-header">
+      <div class="inst-title">MANIPAL UNIVERSITY JAIPUR</div>
+      <div class="dept-title">Department of Biotechnology and Chemical Engineering</div>
+      <div class="course-title">Biology for Engineers (BIT 1001) — Assignment I</div>
+      <div class="meta-bar">
+        <span>Name: Sukarn Kumar</span>
+        <span>Reg. No.: 2602050874</span>
+        <span>Submission Date: 31-08-2026</span>
+      </div>
+    </div>
+
+    <div class="content-body">
+      <h2 class="sec-heading">2.6 Catalytic Mechanisms and Structural Enzymology</h2>
+
+      <h3 class="sub-heading">2.6.1 The Serine Protease Catalytic Triad Mechanism (Subtilisin Family)</h3>
+      <p>
+        Detergent proteases operate via the canonical <strong>Catalytic Triad</strong>, comprising three precisely aligned amino acid residues in the enzyme active site cleft: <strong>Aspartate-32 (Asp32)</strong>, <strong>Histidine-64 (His64)</strong>, and <strong>Serine-221 (Ser221)</strong> (subtilisin BPN' numbering):
+      </p>
+      <ul>
+        <li><strong>Resting Charge-Relay Network:</strong> The carboxylate of Asp32 forms a low-barrier hydrogen bond with the imidazole ring of His64, raising the pKa of its unprotonated nitrogen (Nε2) and enabling His64 to function as a potent general base catalyst.</li>
+        <li><strong>Phase 1 — Nucleophilic Attack & Acyl-Enzyme Formation:</strong> When a substrate peptide bond binds in the active cleft, His64 abstracts the hydroxyl proton from Ser221. The resulting Ser221 alkoxide ion acts as a strong nucleophile, attacking the carbonyl carbon of the peptide bond. This forms a transient <em>tetrahedral intermediate</em> with a negative oxyanion charge stabilized by hydrogen bonds from the <strong>Oxyanion Hole</strong> (formed by Asn155 and the Ser221 peptide backbone). The tetrahedral intermediate collapses, transferring a proton from His64 to the amine leaving group (C-terminal peptide fragment), which departs, leaving a covalent <em>acyl-enzyme intermediate</em>.</li>
+        <li><strong>Phase 2 — Hydrolytic Deacylation:</strong> A nucleophilic water molecule enters the active site. His64 abstracts a proton from water, and the generated hydroxide ion attacks the acyl-enzyme carbonyl carbon, forming a second tetrahedral intermediate. Subsequent collapse cleaves the ester bond to Ser221, releasing the N-terminal peptide fragment as a free carboxylic acid and regenerating the free enzyme.</li>
+      </ul>
+
+      <div class="fig-container">
+        <svg width="670" height="95" viewBox="0 0 670 95">
+          <!-- Step 1 -->
+          <g transform="translate(10, 3)">
+            <rect x="0" y="5" width="145" height="78" rx="5" fill="#f4f6f7" stroke="#7f8c8d" stroke-width="1.2"/>
+            <text x="72" y="20" font-family="Times New Roman" font-size="9" font-weight="bold" fill="#1b4f72" text-anchor="middle">Step 1: Substrate Binding</text>
+            <text x="72" y="36" font-family="Times New Roman" font-size="8" fill="#333" text-anchor="middle">Asp32···His64···Ser221-OH</text>
+            <text x="72" y="50" font-family="Times New Roman" font-size="8" fill="#78281f" text-anchor="middle">+ Peptide Substrate (R-CO-NH-R')</text>
+            <text x="72" y="64" font-family="Times New Roman" font-size="7.5" fill="#145a32" text-anchor="middle">His64 abstracts Ser221 proton</text>
+          </g>
+
+          <path d="M 160 48 L 175 48" stroke="#333" stroke-width="1.5"/>
+
+          <!-- Step 2 -->
+          <g transform="translate(180, 3)">
+            <rect x="0" y="5" width="145" height="78" rx="5" fill="#eaf2f8" stroke="#2980b9" stroke-width="1.2"/>
+            <text x="72" y="20" font-family="Times New Roman" font-size="9" font-weight="bold" fill="#1b4f72" text-anchor="middle">Step 2: Tetrahedral Int. I</text>
+            <text x="72" y="36" font-family="Times New Roman" font-size="8" fill="#333" text-anchor="middle">Nucleophilic attack by Ser221-O⁻</text>
+            <text x="72" y="50" font-family="Times New Roman" font-size="8" fill="#2980b9" text-anchor="middle">Oxyanion hole stabilization</text>
+            <text x="72" y="64" font-family="Times New Roman" font-size="7.5" fill="#c0392b" text-anchor="middle">Cleavage of peptide C-N bond</text>
+          </g>
+
+          <path d="M 330 48 L 345 48" stroke="#333" stroke-width="1.5"/>
+
+          <!-- Step 3 -->
+          <g transform="translate(350, 3)">
+            <rect x="0" y="5" width="145" height="78" rx="5" fill="#fef9e7" stroke="#f1c40f" stroke-width="1.2"/>
+            <text x="72" y="20" font-family="Times New Roman" font-size="9" font-weight="bold" fill="#7d6608" text-anchor="middle">Step 3: Acyl-Enzyme</text>
+            <text x="72" y="36" font-family="Times New Roman" font-size="8" fill="#333" text-anchor="middle">C-term fragment departs (R'-NH2)</text>
+            <text x="72" y="50" font-family="Times New Roman" font-size="8" fill="#7d6608" text-anchor="middle">Covalent intermediate formed</text>
+            <text x="72" y="64" font-family="Times New Roman" font-size="7.5" fill="#154360" text-anchor="middle">+ H2O activated by His64</text>
+          </g>
+
+          <path d="M 500 48 L 515 48" stroke="#333" stroke-width="1.5"/>
+
+          <!-- Step 4 -->
+          <g transform="translate(520, 3)">
+            <rect x="0" y="5" width="140" height="78" rx="5" fill="#d5f5e3" stroke="#27ae60" stroke-width="1.2"/>
+            <text x="70" y="20" font-family="Times New Roman" font-size="9" font-weight="bold" fill="#145a32" text-anchor="middle">Step 4: Deacylation</text>
+            <text x="70" y="36" font-family="Times New Roman" font-size="8" fill="#333" text-anchor="middle">Tetrahedral Int. II collapses</text>
+            <text x="70" y="50" font-family="Times New Roman" font-size="8" fill="#145a32" text-anchor="middle">R-COOH product released</text>
+            <text x="70" y="64" font-family="Times New Roman" font-size="7.5" font-weight="bold" fill="#27ae60" text-anchor="middle">Turnover kcat > 300 s⁻¹</text>
+          </g>
+        </svg>
+        <div class="fig-caption">Figure 2.3: Ping-pong catalytic triad mechanism of serine proteases in biological detergents.</div>
+      </div>
+
+      <p>
+        The catalytic efficiency (k<sub>cat</sub>/K<sub>m</sub> &approx; 10<sup>5</sup>–10<sup>6</sup> M<sup>-1</sup>s<sup>-1</sup>) ensures that each single enzyme molecule hydrolyses thousands of substrate bonds per minute, providing extraordinary stain-clearing amplification at minute dosing (typically comprising just 0.2% to 0.8% of total detergent powder mass).
+      </p>
+    </div>
+  </div>
+
+  <div class="academic-footer">
+    <span>Department of Biotechnology and Chemical Engineering, MUJ</span>
+    <span>BIT 1001: Biology for Engineers — Assignment I</span>
+    <span>Page 10 of 12</span>
+  </div>
+</div>
+
+<!-- =================================================================== -->
+<!-- PAGE 11: QUESTION 2 - PROTEIN ENGINEERING FOR DETERGENT MATRICES    -->
+<!-- =================================================================== -->
+<div class="page" id="page-11">
+  <div>
+    <div class="academic-header">
+      <div class="inst-title">MANIPAL UNIVERSITY JAIPUR</div>
+      <div class="dept-title">Department of Biotechnology and Chemical Engineering</div>
+      <div class="course-title">Biology for Engineers (BIT 1001) — Assignment I</div>
+      <div class="meta-bar">
+        <span>Name: Sukarn Kumar</span>
+        <span>Reg. No.: 2602050874</span>
+        <span>Submission Date: 31-08-2026</span>
+      </div>
+    </div>
+
+    <div class="content-body">
+      <h2 class="sec-heading">2.7 Protein Engineering: Adapting Enzymes to Harsh Detergent Matrices</h2>
+      <p>
+        Native enzymes evolved for mild cellular conditions (pH 7.2, 37°C). In a washing machine drum, an enzyme encounters an aggressive chemical milieu: high alkalinity (pH 9.0–11.0), denaturing anionic surfactants (LAS), bleaching oxidants (percarbonate/peracetic acid), and heavy chelators (zeolites) that strip structural cations. Wild-type proteins would rapidly denature or precipitate.
+      </p>
+      <p>
+        Modern detergent enzymes are modified via <strong>rational protein engineering</strong> and <strong>directed evolution</strong>:
+      </p>
+
+      <div class="fig-container">
+        <svg width="670" height="85" viewBox="0 0 670 85">
+          <g transform="translate(5, 3)">
+            <rect x="0" y="0" width="155" height="74" rx="5" fill="#eaf2f8" stroke="#2980b9" stroke-width="1.2"/>
+            <text x="77" y="16" font-family="Times New Roman" font-size="9.5" font-weight="bold" fill="#1b4f72" text-anchor="middle">ALKALINE STABILITY</text>
+            <text x="77" y="30" font-family="Times New Roman" font-size="7.5" fill="#333" text-anchor="middle">pH 9.0 - 11.5 Competence</text>
+            <text x="77" y="44" font-family="Times New Roman" font-size="7.5" fill="#555" text-anchor="middle">• Asn deamidation replaced</text>
+            <text x="77" y="56" font-family="Times New Roman" font-size="7.5" fill="#555" text-anchor="middle">• Surface Arg/Lys salt bridges</text>
+            <text x="77" y="68" font-family="Times New Roman" font-size="7.5" font-weight="bold" fill="#2980b9" text-anchor="middle">Stable at high [OH⁻]</text>
+          </g>
+
+          <g transform="translate(170, 3)">
+            <rect x="0" y="0" width="155" height="74" rx="5" fill="#d5f5e3" stroke="#27ae60" stroke-width="1.2"/>
+            <text x="77" y="16" font-family="Times New Roman" font-size="9.5" font-weight="bold" fill="#145a32" text-anchor="middle">COLD-WASH ACTION</text>
+            <text x="77" y="30" font-family="Times New Roman" font-size="7.5" fill="#333" text-anchor="middle">Active at 15°C - 30°C</text>
+            <text x="77" y="44" font-family="Times New Roman" font-size="7.5" fill="#555" text-anchor="middle">• Flexible active-site loops</text>
+            <text x="77" y="56" font-family="Times New Roman" font-size="7.5" fill="#555" text-anchor="middle">• Lower activation enthalpy</text>
+            <text x="77" y="68" font-family="Times New Roman" font-size="7.5" font-weight="bold" fill="#27ae60" text-anchor="middle">Saves household energy</text>
+          </g>
+
+          <g transform="translate(335, 3)">
+            <rect x="0" y="0" width="160" height="74" rx="5" fill="#fadbd8" stroke="#c0392b" stroke-width="1.2"/>
+            <text x="80" y="16" font-family="Times New Roman" font-size="9.5" font-weight="bold" fill="#78281f" text-anchor="middle">BLEACH COMPATIBILITY</text>
+            <text x="80" y="30" font-family="Times New Roman" font-size="7.5" fill="#333" text-anchor="middle">Resistant to H2O2 / Peracids</text>
+            <text x="80" y="44" font-family="Times New Roman" font-size="7.5" fill="#555" text-anchor="middle">• Met222 replaced with Ala/Leu</text>
+            <text x="80" y="56" font-family="Times New Roman" font-size="7.5" fill="#555" text-anchor="middle">• Prevents sulfoxide oxidation</text>
+            <text x="80" y="68" font-family="Times New Roman" font-size="7.5" font-weight="bold" fill="#c0392b" text-anchor="middle">Retains 100% activity</text>
+          </g>
+
+          <g transform="translate(505, 3)">
+            <rect x="0" y="0" width="160" height="74" rx="5" fill="#fef9e7" stroke="#f1c40f" stroke-width="1.2"/>
+            <text x="80" y="16" font-family="Times New Roman" font-size="9.5" font-weight="bold" fill="#7d6608" text-anchor="middle">SURFACTANT TOLERANCE</text>
+            <text x="80" y="30" font-family="Times New Roman" font-size="7.5" fill="#333" text-anchor="middle">Resistant to LAS Unfolding</text>
+            <text x="80" y="44" font-family="Times New Roman" font-size="7.5" fill="#555" text-anchor="middle">• Hydrophobic surface buried</text>
+            <text x="80" y="56" font-family="Times New Roman" font-size="7.5" fill="#555" text-anchor="middle">• Rigidified Ca²⁺ binding loops</text>
+            <text x="80" y="68" font-family="Times New Roman" font-size="7.5" font-weight="bold" fill="#b7950b" text-anchor="middle">Shielded from micellar assault</text>
+          </g>
+        </svg>
+        <div class="fig-caption">Figure 2.4: Four fundamental molecular engineering strategies conferring durability in harsh laundry matrices.</div>
+      </div>
+
+      <h3 class="sub-heading">2.7.1 Detailed Molecular Engineering Solutions</h3>
+      <ul>
+        <li><strong>Alkaline Stability via Surface Charge Engineering:</strong> In alkaline wash liquor (pH 10), surface amino acid side chains deprotonate, disrupting salt bridges. Engineers introduced arginine-aspartate surface electrostatic networks and replaced alkali-labile asparagine/glutamine residues prone to spontaneous deamidation.</li>
+        <li><strong>Cold-Active Performance through Loop Plasticity:</strong> Cold washing (15–30°C) cuts domestic heating energy by up to 70%. Introducing glycine residues and pruning bulky hydrophobic clusters in loop segments flanking the active cleft reduces activation enthalpy (ΔH<sup>‡</sup>), sustaining rapid catalytic turnover even at 15°C.</li>
+        <li><strong>Oxidative Bleach Tolerance via Site-Directed Mutagenesis:</strong> Detergent bleaches generate peracetic acid and H<sub>2</sub>O<sub>2</sub>. In native subtilisin, <strong>Methionine-222 (Met222)</strong> sits adjacent to catalytic Ser221. Bleach oxidises its sulfur to a bulky, polar methionine sulfoxide, occluding the active cleft. Mutating Met222 to non-oxidisable residues—specifically <em>M222A (Alanine)</em>, <em>M222L (Leucine)</em>, or <em>M222Q (Glutamine)</em>—preserves 100% catalytic activity in bleach.</li>
+        <li><strong>Resistance to Surfactants & Autoproteolysis:</strong> Anionic surfactants (LAS) denature proteins by inserting alkyl tails into surface hydrophobic patches. Engineers buried hydrophobic residues into the protein core and inserted structural Calcium-binding loops (Ca<sup>2+</sup>) that electrostatically lock the tertiary fold against unfolding and autolytic self-digestion.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="academic-footer">
+    <span>Department of Biotechnology and Chemical Engineering, MUJ</span>
+    <span>BIT 1001: Biology for Engineers — Assignment I</span>
+    <span>Page 11 of 12</span>
+  </div>
+</div>
+
+<!-- =================================================================== -->
+<!-- PAGE 12: QUESTION 2 - ENVIRONMENTAL LCA & ACADEMIC SYNTHESIS         -->
+<!-- =================================================================== -->
+<div class="page" id="page-12">
+  <div>
+    <div class="academic-header">
+      <div class="inst-title">MANIPAL UNIVERSITY JAIPUR</div>
+      <div class="dept-title">Department of Biotechnology and Chemical Engineering</div>
+      <div class="course-title">Biology for Engineers (BIT 1001) — Assignment I</div>
+      <div class="meta-bar">
+        <span>Name: Sukarn Kumar</span>
+        <span>Reg. No.: 2602050874</span>
+        <span>Submission Date: 31-08-2026</span>
+      </div>
+    </div>
+
+    <div class="content-body">
+      <h2 class="sec-heading">2.8 Environmental Life-Cycle Assessment (LCA) & Sustainability Impact</h2>
+      <p>
+        A rigorous Life Cycle Assessment (LCA) reveals that <strong>over 70% of laundry environmental impact stems from electricity used to heat wash water</strong>. Enabling equivalent cleaning at 20°C–30°C vs 60°C delivers dramatic carbon emission reductions:
+      </p>
+
+      <table class="academic-table">
+        <thead>
+          <tr>
+            <th style="width: 25%;">LCA Environmental Metric</th>
+            <th style="width: 37%;">Conventional Chemical Detergent</th>
+            <th style="width: 38%;">Advanced Bio-Enzymatic Detergent</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Wash Water Temperature</strong></td>
+            <td>60°C – 90°C (High thermal energy demand)</td>
+            <td><strong>20°C – 30°C (Ambient / Cold-water wash)</strong></td>
+          </tr>
+          <tr>
+            <td><strong>Electricity Consumption</strong></td>
+            <td>~1.8 – 2.4 kWh per wash cycle</td>
+            <td><strong>~0.4 – 0.6 kWh per wash cycle (70% savings)</strong></td>
+          </tr>
+          <tr>
+            <td><strong>Surfactant Chemical Load</strong></td>
+            <td>High: 20–30% active synthetic surfactants</td>
+            <td><strong>Reduced: 10–15% active surfactants (Replaced by enzymes)</strong></td>
+          </tr>
+          <tr>
+            <td><strong>Textile Garment Lifespan</strong></td>
+            <td>Degraded by harsh caustic chemicals & heat</td>
+            <td><strong>Extended 30–50% via cellulase biopolishing</strong></td>
+          </tr>
+          <tr>
+            <td><strong>Ecotoxicity & Biodegradation</strong></td>
+            <td>Persistent synthetic builders; aquatic toxicity</td>
+            <td><strong>100% Biodegradable proteins (harmless amino acids)</strong></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="table-caption">Table 2.2: Life Cycle Assessment (LCA) environmental comparison between chemical and bio-enzymatic detergency.</div>
+
+      <h2 class="sec-heading">2.9 Advanced Formulation Technologies: Encapsulation & Stabilization</h2>
+      <p>
+        To ensure 12–24 month shelf stability, enzymes are formulated via specialized technologies:
+      </p>
+      <ul>
+        <li><strong>Micro-Encapsulation & Granulation:</strong> Powder enzymes are encased in multi-layer wax/polymer granules containing an inert sodium sulfate core, preventing aerosolization (eliminating worker respiratory sensitization) and shielding enzymes from moisture.</li>
+        <li><strong>Reversible Protease Inhibitors in Liquid Detergents:</strong> In liquid detergents, unprotected proteases would digest co-formulated amylases and lipases. Formulators add reversible inhibitors (4-formylphenylboronic acid or propylene glycol/calcium formate) that temporarily block protease active sites in the bottle, instantly dissociating upon wash dilution.</li>
+      </ul>
+
+      <h2 class="sec-heading">2.10 Concluding Synthesis on Biology for Engineers</h2>
+      <p>
+        The application of biological catalysts across bioethanol production and biological detergents exemplifies the power of <em>Biology for Engineers (BIT 1001)</em>. In biofuels, carbohydrate polymer stereochemistry dictates process feasibility, where selecting sugar-rich waste bypasses structural recalcitrance to ensure economic viability. In detergency, directed molecular evolution transforms delicate natural catalysts into robust nanoscale machines that slash domestic energy use and chemical pollution, achieving true environmental sustainability.
+      </p>
+
+      <div class="callout-box" style="font-size: 8.5pt; margin-top: 4px; padding: 4px 7px;">
+        <strong>Academic References & Technical Standards:</strong><br>
+        1. Novozymes A/S. (2024). <em>Enzymes at Work: Industrial Applications of Biotechnology</em>. Bagsvaerd, Denmark.<br>
+        2. Kirk, O., Borchert, T. V., & Fuglsang, C. C. (2002). Industrial enzyme applications. <em>Curr. Opin. Biotechnol.</em>, 13(4), 345-351.<br>
+        3. Maurer, K. H. (2004). Detergent proteases. <em>Curr. Opin. Biotechnol.</em>, 15(4), 330-334.<br>
+        4. Wyman, C. E. (2018). <em>Aqueous Pretreatment of Plant Biomass for Biological and Chemical Conversion to Fuels</em>. Wiley.
+      </div>
+    </div>
+  </div>
+
+  <div class="academic-footer">
+    <span>Department of Biotechnology and Chemical Engineering, MUJ</span>
+    <span>BIT 1001: Biology for Engineers — Assignment I</span>
+    <span>Page 12 of 12</span>
+  </div>
+</div>
+
+</body>
+</html>

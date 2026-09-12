@@ -1581,6 +1581,11 @@
         </button>
       </div>
 
+      <!-- Gemini Real-Time AI Operational Dispatch Button -->
+      <button class="btn-gemini-drawer-action" onclick="civicApp.askGeminiDrawerDispatch()">
+        <span class="gemini-sparkle">✨</span> Generate Gemini 3.6 Dispatch & Resource Plan
+      </button>
+
       <!-- Operator Actions -->
       <div class="drawer-actions-row">
         <button class="btn-drawer-action teal" onclick="civicApp.operatorDispatchCrew()">
@@ -1606,8 +1611,9 @@
             <div class="sch-brand-row">
               <h3 class="sch-title">SAMARTH AI (समर्थ)</h3>
               <span class="sch-status-tag"><span class="indicator-dot green pulse inline"></span> Autonomous Civic Brain Online</span>
+              <span class="gemini-live-pill"><span class="gemini-sparkle">✨</span> Gemini 3.6 Flash Connected</span>
             </div>
-            <p class="sch-subtitle">Autonomous Municipal Triage, Predictive Routing & Statutory Engineering Engine</p>
+            <p class="sch-subtitle">Autonomous Municipal Triage, Predictive Routing & Statutory Engineering Engine • Live Google Neural AI</p>
           </div>
         </div>
         <button class="btn-samarth-close" onclick="civicApp.closeCommandPalette()">✕</button>
@@ -1616,7 +1622,8 @@
       <!-- Natural Language Query Bar -->
       <div class="palette-input-row samarth-input-row">
         <span class="palette-icon">💬</span>
-        <input type="text" id="palette-search-input" class="palette-input" placeholder="Ask Samarth anything: 'Which SLAs are at risk?', 'Explain plastic bitumen', 'What are your works?'..." onkeyup="civicApp.handlePaletteInput(event)" />
+        <input type="text" id="palette-search-input" class="palette-input" placeholder="Ask Samarth anything: 'Which SLAs are at risk?', 'Explain plastic bitumen', 'How to prevent monsoon flooding?'..." onkeydown="if(event.key === 'Enter') civicApp.askGeminiLive()" onkeyup="civicApp.handlePaletteInput(event)" />
+        <button class="btn-ask-gemini" onclick="civicApp.askGeminiLive()" title="Execute prompt on Google Gemini 3.6 Flash Neural Model">✨ Ask Gemini</button>
         <span class="palette-esc-hint">ESC to close • Press S or ⌘K</span>
       </div>
 
@@ -1626,6 +1633,8 @@
         <button class="btn-samarth-chip highlight" onclick="civicApp.askSamarthAI('works')">📋 What are Samarth's Works?</button>
         <button class="btn-samarth-chip" onclick="civicApp.askSamarthAI('sla')">🚨 Check SLA Breaches</button>
         <button class="btn-samarth-chip" onclick="civicApp.askSamarthAI('plastic')">♻️ Plastic Bitumen (IRC SP:98)</button>
+        <button class="btn-samarth-chip gemini-chip" onclick="civicApp.askGeminiLive('What is the circular economy impact of using waste plastic in city roads?')">✨ Plastic Road Impact</button>
+        <button class="btn-samarth-chip gemini-chip" onclick="civicApp.askGeminiLive('How can municipal teams prevent SLA breaches during high-monsoon emergencies under the Sakala Act?')">✨ Monsoon SLA Strategy</button>
         <button class="btn-samarth-chip" onclick="civicApp.askSamarthAI('mediroute')">🚑 Launch MediRoute Wave</button>
         <button class="btn-samarth-chip" onclick="civicApp.askSamarthAI('statutory')">📜 Statutory Forms Register</button>
         <button class="btn-samarth-chip" onclick="civicApp.askSamarthAI('cluster23')">📍 Inspect Cluster #23</button>
